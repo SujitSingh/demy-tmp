@@ -1,44 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>{{ pageTitle }}</title>
-  <link rel="stylesheet" href="/css/main.css">
-  <link rel="stylesheet" href="/css/product.css">
-</head>
-<body>
-  <header class="main-header">
-    <nav class="main-header-nav">
-      <ul class="main-header-list">
-        <li><a href="/" class="active">Shop</a></li>
-        <li><a href="/admin/add-product">Add product</a></li>
-      </ul>
-    </nav>
-  </header>
-  <main class="products">
-    {{#if hasProds }}
-      {{#each prods }}
-        <article class="card product-item">
-          <header class="card-header">
-            <h4 class="product-title">{{ this.title }}</h4>
-          </header>
-          <div class="card-banner">
-            <img class="product-image" src="https://previews.123rf.com/images/theohrm/theohrm1502/theohrm150200003/36518119-a-simple-cartoon-style-drawing-of-a-stack-of-books-this-file-is-vector-.jpg" alt="{{this.title}}" />
-          </div>
-          <div class="card-content">
-            <h5 class="product-price">$20.0</h5>
-            <p class="product-description">Some dummy description of my product</p>
-          </div>
-          <div class="card-footer">
-            <button class="btn-action">Add to cart</button>
-          </div>
-        </article>
-      {{/each}}
-    {{else}}
-      <h2>No products found</h2>
-    {{/if}}
-  </main>
-</body>
-</html>
+<main class="products">
+  {{#if hasProds }}
+    {{#each prods }}
+      <article class="card product-item">
+        <header class="card-header">
+          <h4 class="product-title">{{ this.title }}</h4>
+        </header>
+        <div class="card-banner">
+          <img class="product-image" src="https://previews.123rf.com/images/theohrm/theohrm1502/theohrm150200003/36518119-a-simple-cartoon-style-drawing-of-a-stack-of-books-this-file-is-vector-.jpg" alt="{{this.title}}" />
+        </div>
+        <div class="card-content">
+          <h5 class="product-price">$20.0</h5>
+          <p class="product-description">Some dummy description of my product</p>
+        </div>
+        <div class="card-footer">
+          <button class="btn-action">Add to cart</button>
+        </div>
+      </article>
+    {{/each}}
+  {{else}}
+    <h2>No products found</h2>
+  {{/if}}
+</main>

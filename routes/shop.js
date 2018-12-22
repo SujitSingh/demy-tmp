@@ -9,7 +9,9 @@ router.get('/', (req, res, next) => {
   res.render('shop', {
     pageTitle: 'Shop',
     prods: adminData.products,
-    hasProds: adminData.products.length > 0
+    hasProds: adminData.products.length > 0,
+    activeShop: true,
+    productCSS: true
   });
 });
 
