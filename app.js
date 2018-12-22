@@ -1,3 +1,5 @@
+const path = require('path');
+const rootDir = require('./utils/paths');
 const http = require('http');
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -14,7 +16,7 @@ server.use(shopRoutes);
 
 // 404 route
 server.use((req, res, next) => {
-  res.status(404).send('<h2>Routes not found</h2>')
+  res.status(404).sendFile(path.join(rootDir, 'views', '404.html'));
 });
 
 const appServer = http.createServer(server);
