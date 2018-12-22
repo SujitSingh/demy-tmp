@@ -1,0 +1,15 @@
+.add-product-form {
+  margin: 0 auto;
+  width: 80%;
+}
+.form-control {
+  margin: 20px 0;
+}
+.form-control label,
+.form-control input {
+  display: block;
+}
+
+.add-product-form button {
+   cursor: pointer;
+}

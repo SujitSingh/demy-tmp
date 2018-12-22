@@ -1,15 +1,35 @@
-.add-product-form {
-  margin: 0 auto;
-  width: 80%;
-}
-.form-control {
-  margin: 20px 0;
-}
-.form-control label,
-.form-control input {
-  display: block;
+main.products {
+  display: flex;
+  padding: 10px;
 }
 
-.add-product-form button {
-   cursor: pointer;
+.card {
+  box-shadow: 0 0 10px #bfbfbf;
+}
+.card .card-header {
+  border-bottom: 1px solid #ccc;
+  padding: 10px;
+  text-align: center;
+}
+.card .card-banner img {
+  display: block;
+}
+.card .card-content {
+  text-align: center;
+  padding: 10px;
+}
+.card .card-footer {
+  border-top: 1px solid #ccc;
+  padding: 10px;
+}
+
+.card.product-item {
+  flex: 0.3;
+  margin: 10px;
+}
+.card.product-item .product-title{
+  margin: 5px 0;
+}
+.card.product-item .card-footer {
+  text-align: center;
 }

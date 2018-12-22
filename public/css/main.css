@@ -3,6 +3,10 @@ body, html {
   margin: 0;
   font-family: Arial, Helvetica, sans-serif;
 }
+img, table {
+  max-width: 100%;
+}
+
 .main-header {
   background-color: #b3d8c0;
   display: flex;
