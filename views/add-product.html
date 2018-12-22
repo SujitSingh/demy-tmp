@@ -4,19 +4,26 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/product.css">
   <title>Add product</title>
 </head>
 <body>
-  <header>
-    <nav>
-      <ul>
+  <header class="main-header">
+    <nav class="main-header-nav">
+      <ul class="main-header-list">
         <li><a href="/">Shop</a></li>
         <li><a href="/admin/add-product">Add product</a></li>
       </ul>
     </nav>
   </header>
-  <form action="/admin/add-product" method="POST">
-    <input type="text" name="title">
+  <form action="/admin/add-product" method="POST" class="add-product-form">
+    <div class="form-control">
+      <label for="title">
+        Title: 
+        <input type="text" id="title" name="title">
+      </label>
+    </div>
     <button type="submit">Save data</button>
   </form>
 </body>
