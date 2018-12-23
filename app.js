@@ -7,13 +7,15 @@ const expressHbs = require('express-handlebars');
 
 const app = express();
 
-app.engine('hbs', expressHbs({ // defining handlebars engine
-  layoutsDir: 'views/layout/',
-  defaultLayout: 'base',
-  extname: 'hbs'
-}));
-app.set('view engine', 'hbs');
-app.set('views', 'views');
+// defining handlebars engine
+// app.engine('hbs', expressHbs({
+//   layoutsDir: 'views/layout/',
+//   defaultLayout: 'base',
+//   extname: 'hbs'
+// }));
+// app.set('view engine', 'hbs'); // to use handlebars templating engine
+app.set('view engine', 'ejs'); // templating engine to use
+app.set('views', 'views'); // path of views
 
 // importing routes
 const adminData = require('./routes/admin');
