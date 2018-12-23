@@ -8,6 +8,7 @@ const adminData = require('./admin');
 router.get('/', (req, res, next) => {
   res.render('shop', {
     pageTitle: 'Shop',
+    path: '/',
     prods: adminData.products,
     hasProds: adminData.products.length > 0,
     activeShop: true,

@@ -1,22 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <link rel="stylesheet" href="/css/main.css">
+<%- include('includes/page-start.ejs') %>
   <link rel="stylesheet" href="/css/product.css">
-  <title><%= pageTitle %></title>
 </head>
 <body>
-  <header class="main-header">
-    <nav class="main-header-nav">
-      <ul class="main-header-list">
-        <li><a href="/">Shop</a></li>
-        <li><a href="/admin/add-product">Add product</a></li>
-      </ul>
-    </nav>
-  </header>
+  <%- include('includes/navigation.ejs') %>
+
   <main class="products">
     <% if(prods.length > 0) { %>
       <% for(let prod of prods) { %>
@@ -40,5 +27,5 @@
       <h2>No products found</h2>
     <% } %>
   </main>
-</body>
-</html>
+
+<%- include('includes/page-end.ejs') %>

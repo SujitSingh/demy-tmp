@@ -1,22 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title><%= pageTitle %></title>
-  <link rel="stylesheet" href="/css/main.css">
+<%- include('includes/page-start.ejs') %>
   <link rel="stylesheet" href="/css/forms.css">
 </head>
 <body>
-  <header class="main-header">
-    <nav class="main-header-nav">
-      <ul class="main-header-list">
-        <li><a href="/">Shop</a></li>
-        <li><a href="/admin/add-product">Add product</a></li>
-      </ul>
-    </nav>
-  </header>
+  <%- include('includes/navigation.ejs') %>
+
   <form action="/admin/add-product" method="POST" class="add-product-form">
     <div class="form-control">
       <label for="title">
@@ -26,5 +13,5 @@
     </div>
     <button type="submit">Save data</button>
   </form>
-</body>
-</html>
+  
+<%- include('includes/page-end.ejs') %>
