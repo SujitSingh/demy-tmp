@@ -11,14 +11,14 @@ app.set('view engine', 'ejs'); // templating engine to use
 app.set('views', 'views'); // path of views
 
 // importing routes
-const adminData = require('./routes/admin');
+const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(rootDir, 'public')));
 
 // using routes
-app.use('/admin', adminData.routes);
+app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 // 404 route
 app.use((req, res, next) => {
