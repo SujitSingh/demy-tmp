@@ -14,6 +14,8 @@ app.set('views', 'views'); // path of views
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 
+const errorCtrl = require('./controllers/error');
+
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(rootDir, 'public')));
 
@@ -21,9 +23,7 @@ app.use(express.static(path.join(rootDir, 'public')));
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 // 404 route
-app.use((req, res, next) => {
-  res.status(404).render('404', { pageTitle: '404', path: '' });
-});
+app.use(errorCtrl.notFound);
 
 const appServer = http.createServer(app);
 appServer.listen(3000, ()=> {
