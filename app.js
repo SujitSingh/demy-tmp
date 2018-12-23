@@ -3,17 +3,10 @@ const rootDir = require('./utils/paths');
 const http = require('http');
 const express = require('express');
 const bodyParser = require('body-parser');
-const expressHbs = require('express-handlebars');
 
 const app = express();
 
-// defining handlebars engine
-// app.engine('hbs', expressHbs({
-//   layoutsDir: 'views/layout/',
-//   defaultLayout: 'base',
-//   extname: 'hbs'
-// }));
-// app.set('view engine', 'hbs'); // to use handlebars templating engine
+// defining templating engine
 app.set('view engine', 'ejs'); // templating engine to use
 app.set('views', 'views'); // path of views
 
