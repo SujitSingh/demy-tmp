@@ -12,14 +12,16 @@
             <h4 class="product-title"><%= prod.title %></h4>
           </header>
           <div class="card-banner">
-            <img class="product-image" src="https://previews.123rf.com/images/theohrm/theohrm1502/theohrm150200003/36518119-a-simple-cartoon-style-drawing-of-a-stack-of-books-this-file-is-vector-.jpg" alt="{{this.title}}" />
+            <img class="product-image" src="<%= prod.imgUrl %>" alt="<%= prod.title %>" />
           </div>
           <div class="card-content">
-            <h5 class="product-price">$20.0</h5>
-            <p class="product-description">Some dummy description of my product</p>
+            <h5 class="product-price">$<%= prod.price %></h5>
+            <p class="product-description"><%= prod.description %></p>
           </div>
           <div class="card-footer">
-            <button class="btn-action">Add to cart</button>
+            <form action="/add-to-cart" method="POST">
+              <button class="btn-action" type="submit">Add to cart</button>
+            </form>
           </div>
         </article>
       <% } %>

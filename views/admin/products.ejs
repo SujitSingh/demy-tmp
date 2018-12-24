@@ -4,4 +4,31 @@
 <body>
   <%- include('../includes/navigation.ejs') %>
 
+  <main class="products">
+    <% if(prods.length > 0) { %>
+      <% for(let prod of prods) { %>
+        <article class="card product-item">
+          <header class="card-header">
+            <h4 class="product-title"><%= prod.title %></h4>
+          </header>
+          <div class="card-banner">
+            <img class="product-image" src="<%= prod.imgUrl %>" alt="<%= prod.title %>" />
+          </div>
+          <div class="card-content">
+            <h5 class="product-price">$<%= prod.price %></h5>
+            <p class="product-description"><%= prod.description %></p>
+          </div>
+          <div class="card-footer">
+            <a href="/admin/edit-product" class="btn-action edit">Edit</a>
+            <form action="/admin/delete-product" method="POST" class="delete-form">
+              <button class="btn-action delete" type="submit">Delete</button>
+            </form>
+          </div>
+        </article>
+      <% } %>
+    <% } else { %>
+      <h2>No products found</h2>
+    <% } %>
+  </main>
+
 <%- include('../includes/page-end.ejs') %>
