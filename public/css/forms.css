@@ -5,10 +5,12 @@
 .form-control {
   margin: 20px 0;
 }
-.form-control label,
-.form-control input {
-  display: block;
+.form-control label { 
+  display: inline-block;
+  width: 100px; 
 }
+.form-control input,
+.form-control input, { }
 
 .add-product-form button {
    cursor: pointer;
