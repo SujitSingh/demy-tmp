@@ -25,7 +25,7 @@ module.exports = class Product {
 
 const getProductContent = (cb) => {
   fs.readFile(productFile, (error, fileContent) => {
-    if(!error) {
+    if(!error && fileContent.length) {
       cb(JSON.parse(fileContent)); // pass the data to call-back function
     } else {
       cb([]);
