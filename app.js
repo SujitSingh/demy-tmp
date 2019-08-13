@@ -3,6 +3,7 @@ const rootDir = require('./utils/paths');
 const http = require('http');
 const express = require('express');
 const bodyParser = require('body-parser');
+const port = process.env.PORT || 3300;
 
 const app = express();
 
@@ -16,7 +17,9 @@ const shopRoutes = require('./routes/shop');
 
 const errorCtrl = require('./controllers/error');
 
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 app.use(express.static(path.join(rootDir, 'public')));
 
 // using routes
@@ -26,6 +29,6 @@ app.use(shopRoutes);
 app.use(errorCtrl.notFound);
 
 const appServer = http.createServer(app);
-appServer.listen(3000, ()=> {
-  console.log('Listening');
+appServer.listen(port, () => {
+  console.log(`Listening at http://localhost:${port}/`);
 });
