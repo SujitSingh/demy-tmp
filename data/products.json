@@ -1,1 +1,20 @@
-[{"title":"dfv,mdfv","imgUrl":"fvdfvl","description":"dfvdfv\r\n","price":"0"},{"title":"dfv,mdfv","imgUrl":"fvdfvl","description":"dfvdfv\r\n\r\n","price":"0"},{"title":"Product tile","imgUrl":"product-image","description":"Product descrition","price":"433.00"},{"title":"New book","imgUrl":"344343545","description":"Some new book","price":"323.76"}]
+[
+  {
+    "title": "Product0",
+    "imgUrl": "/img/book-img.jpeg",
+    "description": "New product0",
+    "price": "23.89"
+  },
+  {
+    "title": "Product1",
+    "imgUrl": "/img/book-img.jpeg",
+    "description": "New product1",
+    "price": "233.89"
+  },
+  {
+    "title": "Product2",
+    "imgUrl": "/img/book-img.jpeg",
+    "description": "New product2",
+    "price": "533.89"
+  }
+]
