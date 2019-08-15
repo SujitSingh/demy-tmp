@@ -3,5 +3,24 @@
 </head>
 <body>
   <%- include('../includes/navigation.ejs') %>
+  <main>
+    <article class="card product-item">
+      <header class="card-header">
+        <h4 class="product-title"><%= product.title %></h4>
+      </header>
+      <div class="card-banner">
+        <img class="product-image" src="<%= product.imgUrl %>" alt="<%= product.title %>" />
+      </div>
+      <div class="card-content">
+        <h5 class="product-price">$<%= product.price %></h5>
+        <p class="product-description"><%= product.description %></p>
+      </div>
+      <div class="card-footer">
+        <form action="/cart" method="POST">
+          <button class="btn-action" type="submit">Add to cart</button>
+        </form>
+      </div>
+    </article>
+  </main>
 
 <%- include('../includes/page-end.ejs') %>
