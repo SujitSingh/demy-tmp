@@ -6,20 +6,33 @@ const rootDir = require('../utils/paths');
 const productFile = path.join(rootDir, 'data', 'products.json');
 
 module.exports = class Product {
-  constructor(title, imgUrl, description, price) {
-    this.title = title;
-    this.imgUrl = imgUrl;
-    this.description = description;
-    this.price = price;
+  constructor(id, title, imgUrl, description, price) {
+    this.id = id && id.trim() || null;
+    this.title = title.trim();
+    this.imgUrl = imgUrl.trim();
+    this.description = description.trim();
+    this.price = price && parseFloat(price) || 0;
   }
 
   save() {
-    this.id = (Math.random() * 1000).toString();
     getProductContent(products => {
-      products.push(this); // add new product
-      fs.writeFile(productFile, JSON.stringify(products), (error) => {
-        console.log(error);
-      });
+      if (this.id && products) {
+        const productIndex = products.findIndex(prod => prod.id === this.id);
+        if (productIndex > -1) {
+          // existing product
+          products[productIndex] = this;
+          fs.writeFile(productFile, JSON.stringify(products), (error) => {
+            console.log(error);
+          });
+        }
+      } else {
+        // new product
+        this.id = (Math.random() * 1000).toString();
+        products.push(this); // add new product
+        fs.writeFile(productFile, JSON.stringify(products), (error) => {
+          console.log(error);
+        });
+      }
     });
   }
 

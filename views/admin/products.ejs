@@ -19,8 +19,8 @@
             <p class="product-description"><%= product.description %></p>
           </div>
           <div class="card-footer">
-            <a href="/admin/edit-product" class="btn-action edit">Edit</a>
-            <form action="/admin/delete-product" method="POST" class="delete-form">
+            <a href="/admin/edit-product/<%=product.id%>" class="btn-action edit">Edit</a>
+            <form action="/admin/delete-product" method="POST" class="inline delete-form">
               <button class="btn-action delete" type="submit">Delete</button>
             </form>
           </div>

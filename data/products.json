@@ -1,16 +1,1 @@
-[
-  {
-    "id": "43984",
-    "title": "Product0",
-    "imgUrl": "/img/book-img.jpeg",
-    "description": "New product0",
-    "price": 23.89
-  },
-  {
-    "id": "439443",
-    "title": "Product1",
-    "imgUrl": "/img/book-img.jpeg",
-    "description": "New product1",
-    "price": 233.89
-  }
-]
+[{"id":"43984","title":"Product0","imgUrl":"/img/book-img.jpeg","description":"New product0","price":23.89},{"id":"439443","title":"Product11","imgUrl":"/img/book-img.jpeg","description":"New product1","price":2353.89}]
