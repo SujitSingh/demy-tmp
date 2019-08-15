@@ -6,23 +6,21 @@
 
   <main class="products">
     <% if(prods.length > 0) { %>
-      <% for(let prod of prods) { %>
+      <% for(let product of prods) { %>
         <article class="card product-item">
           <header class="card-header">
-            <h4 class="product-title"><%= prod.title %></h4>
+            <h4 class="product-title"><%= product.title %></h4>
           </header>
           <div class="card-banner">
-            <img class="product-image" src="<%= prod.imgUrl %>" alt="<%= prod.title %>" />
+            <img class="product-image" src="<%= product.imgUrl %>" alt="<%= product.title %>" />
           </div>
           <div class="card-content">
-            <h5 class="product-price">$<%= prod.price %></h5>
-            <p class="product-description"><%= prod.description %></p>
+            <h5 class="product-price">$<%= product.price %></h5>
+            <p class="product-description"><%= product.description %></p>
           </div>
           <div class="card-footer">
-            <a href="/products/<%= prod.id %>" class="btn">Details</a>
-            <form action="/add-to-cart" method="POST">
-              <button class="btn-action" type="submit">Add to cart</button>
-            </form>
+            <a href="/products/<%= product.id %>" class="btn">Details</a>
+            <%- include('../includes/add-to-cart.ejs', {product: product}) %>
           </div>
         </article>
       <% } %>

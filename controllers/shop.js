@@ -1,4 +1,6 @@
+// @ts-check
 const Product = require('../models/product');
+const Cart = require('../models/cart');
 
 exports.getIndex = (req, res, next) => {
   Product.fetchAll(products => {
@@ -37,6 +39,13 @@ exports.getCart = (req, res, next) => {
       pageTitle: 'My cart',
       path: '/cart'
     });
+  });
+}
+
+exports.addToCart = (req, res, next) => {
+  const productId = req.body.productId;
+  Product.findById(productId, product => {
+    Cart.addProduct(productId, product.price);
   });
 }
 

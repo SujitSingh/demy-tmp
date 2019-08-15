@@ -6,17 +6,17 @@
 
   <main class="products">
     <% if(prods.length > 0) { %>
-      <% for(let prod of prods) { %>
+      <% for(let product of prods) { %>
         <article class="card product-item">
           <header class="card-header">
-            <h4 class="product-title"><%= prod.title %></h4>
+            <h4 class="product-title"><%= product.title %></h4>
           </header>
           <div class="card-banner">
-            <img class="product-image" src="<%= prod.imgUrl %>" alt="<%= prod.title %>" />
+            <img class="product-image" src="<%= product.imgUrl %>" alt="<%= product.title %>" />
           </div>
           <div class="card-content">
-            <h5 class="product-price">$<%= prod.price %></h5>
-            <p class="product-description"><%= prod.description %></p>
+            <h5 class="product-price">$<%= product.price %></h5>
+            <p class="product-description"><%= product.description %></p>
           </div>
           <div class="card-footer">
             <a href="/admin/edit-product" class="btn-action edit">Edit</a>
