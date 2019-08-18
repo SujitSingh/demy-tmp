@@ -21,6 +21,7 @@
           <div class="card-footer">
             <a href="/admin/edit-product/<%=product.id%>" class="btn-action edit">Edit</a>
             <form action="/admin/delete-product" method="POST" class="inline delete-form">
+              <input type="hidden" name="productId" value="<%=product.id%>">
               <button class="btn-action delete" type="submit">Delete</button>
             </form>
           </div>
