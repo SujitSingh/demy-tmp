@@ -6,6 +6,17 @@ const rootDir = require('../utils/paths');
 const cartFile = path.join(rootDir, 'data', 'cart.json');
 
 module.exports = class Cart {
+  static getCart(cb) {
+    fs.readFile(cartFile, (error, fileContent) => {
+      if (error) {
+        cb(null);
+      } else {
+        const cart = JSON.parse(fileContent);
+        cb(cart);
+      }
+    });
+  }
+
   static addProduct(id, productPrice) {
     // fetch the previous cart
     fs.readFile(cartFile, (error, fileContent) => {

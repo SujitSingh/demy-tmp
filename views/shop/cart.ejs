@@ -3,5 +3,32 @@
 </head>
 <body>
   <%- include('../includes/navigation.ejs') %>
+  
+  <main class="products">
+    <% if(products.length > 0) { %>
+      <% for(let prodObj of products) { %>
+        <article class="card product-item">
+          <header class="card-header">
+            <h4 class="product-title">
+              <%= prodObj.productData.title %> (<%= prodObj.qty %>)
+            </h4>
+            <form action="/cart-delete-item" method="POST">
+              <input type="hidden" value="<%= prodObj.productData.id %>" name="productId">
+              <button class="btn-action" type="submit">Delete</button>
+            </form>
+          </header>
+          <div class="card-banner">
+            <img class="product-image" src="<%= prodObj.productData.imgUrl %>" alt="<%= prodObj.productData.title %>" />
+          </div>
+          <div class="card-content">
+            <h5 class="product-price">$<%= prodObj.productData.price %></h5>
+            <p class="product-description"><%= prodObj.productData.description %></p>
+          </div>
+        </article>
+      <% } %>
+    <% } else { %>
+      <h2>No products in cart</h2>
+    <% } %>
+  </main>
 
 <%- include('../includes/page-end.ejs') %>
