@@ -10,11 +10,14 @@
   },
   "dependencies": {
     "ejs": "^2.6.1",
-    "express": "^4.16.4"
+    "express": "^4.16.4",
+    "mysql2": "^2.1.0"
   },
   "devDependencies": {},
   "nodemonConfig": {
-    "ignore": ["data/*"]
+    "ignore": [
+      "data/*"
+    ]
   },
   "author": "",
   "license": "ISC"

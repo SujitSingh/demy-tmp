@@ -2,7 +2,6 @@ const path = require('path');
 const rootDir = require('./utils/paths');
 const http = require('http');
 const express = require('express');
-const bodyParser = require('body-parser');
 const port = process.env.PORT || 3300;
 
 const app = express();
