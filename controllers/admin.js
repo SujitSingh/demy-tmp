@@ -1,7 +1,7 @@
 const Product = require('../models/product');
 
 exports.getProducts = (req, res, next) => {
-  Product.fetchAll().then(([products]) => {
+  Product.findAll().then(products => {
     res.render('admin/products', {
       pageTitle: 'Admin Products',
       path: '/admin/products',
@@ -22,11 +22,12 @@ exports.getAddProduct = (req, res, next) => {
 
 exports.postAddProduct = (req, res, next) => {
   const title = req.body.title;
-  const imgUrl = req.body.imgUrl;
+  const imageUrl = req.body.imgUrl;
   const description = req.body.description;
   const price = req.body.price;
-  const product = new Product(null, title, imgUrl, description, price);
-  product.save().then(() => {
+  Product.create({
+    title, price, imageUrl, description 
+  }).then(result => {
     res.redirect('/');
   }).catch(error => {
     console.log(error);
@@ -35,7 +36,7 @@ exports.postAddProduct = (req, res, next) => {
 
 exports.getEditProduct = (req, res, next) => {
   const productId = req.params.productId;
-  Product.findById(productId).then(([product]) => {
+  Product.findByPk(productId).then(product => {
     if (product) {
       res.render('admin/edit-product', { 
         pageTitle: 'Edit product', 

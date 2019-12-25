@@ -5,14 +5,14 @@
   <%- include('../includes/navigation.ejs') %>
 
   <main class="products">
-    <% if(prods.length > 0) { %>
+    <% if(prods && prods.length > 0) { %>
       <% for(let product of prods) { %>
         <article class="card product-item">
           <header class="card-header">
             <h4 class="product-title"><%= product.title %></h4>
           </header>
           <div class="card-banner">
-            <img class="product-image" src="<%= product.imgUrl %>" alt="<%= product.title %>" />
+            <img class="product-image" src="<%= product.imageUrl %>" alt="<%= product.title %>" />
           </div>
           <div class="card-content">
             <h5 class="product-price">$<%= product.price %></h5>

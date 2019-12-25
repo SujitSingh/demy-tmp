@@ -2,8 +2,9 @@ const path = require('path');
 const rootDir = require('./utils/paths');
 const http = require('http');
 const express = require('express');
-const port = process.env.PORT || 3300;
+const sequelize = require('./utils/database');
 
+const port = process.env.PORT || 3300;
 const app = express();
 
 // defining templating engine
@@ -28,6 +29,12 @@ app.use(shopRoutes);
 app.use(errorCtrl.notFound);
 
 const appServer = http.createServer(app);
-appServer.listen(port, () => {
-  console.log(`Listening at http://localhost:${port}/`);
+
+sequelize.sync({ logging: false }).then(result => {
+  console.log('Database sync complete');
+  appServer.listen(port, () => {
+    console.log(`Listening at http://localhost:${port}/`);
+  });
+}).catch(error => {
+  console.log('Failed to sync Database', error);
 });

@@ -1,33 +1,19 @@
 // @ts-check
-const db = require('../utils/database');
-const Cart = require('./cart');
+const Sequelize = require('sequelize');
+const sequelize = require('../utils/database');
 
-module.exports = class Product {
-  constructor(id, title, imgUrl, description, price) {
-    this.id = id && id.trim() || null;
-    this.title = title.trim();
-    this.imgUrl = imgUrl.trim();
-    this.description = description.trim();
-    this.price = price && parseFloat(price) || 0;
-  }
+const Product = sequelize.define('Product', {
+  id: {
+    type: Sequelize.UUID,
+    defaultValue: Sequelize.UUIDV4,
+    primaryKey: true,
+    unique: true,
+    allowNull: false
+  },
+  title: { type: Sequelize.STRING, allowNull: false },
+  price: { type: Sequelize.DOUBLE, allowNull: false },
+  imageUrl: { type: Sequelize.STRING, allowNull: false },
+  description: Sequelize.STRING
+});
 
-  save() {
-    const query = 'INSERT INTO Products (title, price, imageUrl, description) VALUES (?, ?, ?, ?)';
-    return db.execute(query, [this.title, this.price, this.imgUrl, this.description]);
-  }
-
-  static fetchAll() {
-    const query = 'SELECT * FROM Products';
-    return db.execute(query);
-  }
-
-  static findById(id) {
-    const query = 'SELECT * FROM Products WHERE id = ?';
-    return db.execute(query, [id]);
-  }
-
-  static deleteById(id) {
-    const query = 'DELETE FROM Products WHERE id = ?';
-    return db.execute(query, [id]);
-  }
-}
+module.exports = Product;
