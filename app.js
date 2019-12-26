@@ -27,7 +27,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(rootDir, 'public')));
 
 app.use((req, res, next) => {
-  User.findByPk(1).then(user => {
+  User.findOne({ where: { email: 'admin1@test.com' }}).then(user => {
     req.user = user;
     next();
   }).catch(error => {
@@ -50,9 +50,9 @@ User.hasMany(Product);
 // sync database and tables
 sequelize.sync({ logging: false }).then(result => {
   console.log('Database sync complete');
-  User.findByPk(1).then(user => {
+  User.findOne({ where: { email: 'admin1@test.com' }}).then(user => {
     if (!user) {
-      return User.create({name: 'User1', email: 'user1@test.com'});
+      return User.create({name: 'Admin1', email: 'admin1@test.com'});
     }
     return user;
   }).then(user => {
