@@ -1,3 +1,4 @@
+// @ts-check
 const path = require('path');
 const rootDir = require('./utils/paths');
 const http = require('http');
@@ -10,6 +11,8 @@ const app = express();
 const sequelize = require('./utils/database');
 const Product = require('./models/product');
 const User = require('./models/user');
+const Cart = require('./models/cart');
+const CartItem = require('./models/cart-item');
 
 // defining templating engine
 app.set('view engine', 'ejs'); // templating engine to use
@@ -43,22 +46,34 @@ app.use(errorCtrl.notFound);
 
 const appServer = http.createServer(app);
 
-// table model association
+// database tables association
 Product.belongsTo(User, { constraints: true, onDelete: 'CASCADE' });
 User.hasMany(Product);
+User.hasOne(Cart);
+Cart.belongsTo(User);
+Cart.belongsToMany(Product, { through: CartItem });
+Product.belongsToMany(Cart, { through: CartItem });
 
 // sync database and tables
 sequelize.sync({ logging: false }).then(result => {
   console.log('Database sync complete');
-  User.findOne({ where: { email: 'admin1@test.com' }}).then(user => {
+  return User.findOne({ where: { email: 'admin1@test.com' }}).then(user => {
     if (!user) {
       return User.create({name: 'Admin1', email: 'admin1@test.com'});
     }
     return user;
-  }).then(user => {
-    appServer.listen(port, () => {
-      console.log(`Listening at http://localhost:${port}/`);
-    });
+  });
+}).then(user => {
+  // get cart
+  return user.getCart().then(cart => {
+    if (!cart) {
+      return user.createCart(); // create cart for user
+    }
+    return cart;
+  });
+}).then(() => {
+  appServer.listen(port, () => {
+    console.log(`Listening at http://localhost:${port}/`);
   });
 }).catch(error => {
   console.log('Failed to sync Database', error);
