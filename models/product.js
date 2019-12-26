@@ -4,9 +4,9 @@ const sequelize = require('../utils/database');
 
 const Product = sequelize.define('Product', {
   id: {
-    type: Sequelize.UUID,
-    defaultValue: Sequelize.UUIDV4,
+    type: Sequelize.INTEGER,
     primaryKey: true,
+    autoIncrement: true,
     unique: true,
     allowNull: false
   },
