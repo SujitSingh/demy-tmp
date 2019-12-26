@@ -11,9 +11,11 @@ main.products {
   padding: 10px;
   text-align: center;
 }
-.card .card-banner img {
+.card .card-banner img.product-image {
   display: block;
   margin: 10px auto;
+  max-width: 300px;
+  max-height: 200px;
 }
 .card .card-content {
   text-align: center;
