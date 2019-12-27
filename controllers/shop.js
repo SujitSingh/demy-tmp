@@ -1,6 +1,5 @@
 // @ts-check
 const Product = require('../models/product');
-const Cart = require('../models/cart');
 
 exports.getIndex = (req, res, next) => {
   Product.findAll().then(products => {
@@ -103,6 +102,25 @@ exports.getOrders = (req, res, next) => {
       pageTitle: 'My orders',
       path: '/orders'
     });
+  }).catch(error => {
+    console.log(error);
+  });
+}
+
+exports.postOrders = (req, res, next) => {
+  req.user.getCart().then(cart => {
+    return cart.getProducts();
+  }).then(products => {
+    return req.user.createOrder().then(order => {
+      return order.addProducts(products.map(product => {
+        product.OrderItem = {
+          quantity: product.CartItem.quantity
+        };
+        return product;
+      }));
+    });
+  }).then(result => {
+    res.redirect('/orders');
   }).catch(error => {
     console.log(error);
   });

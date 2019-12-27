@@ -4,28 +4,33 @@
 <body>
   <%- include('../includes/navigation.ejs') %>
   
-  <main class="products">
+  <main class="content-area">
     <% if(products.length > 0) { %>
-      <% for(let product of products) { %>
-        <article class="card product-item">
-          <header class="card-header">
-            <h4 class="product-title">
-              <%= product.title %> (<%= product.CartItem.quantity %>)
-            </h4>
-            <form action="/cart-delete-item" method="POST">
-              <input type="hidden" value="<%= product.id %>" name="productId">
-              <button class="btn-action" type="submit">Delete</button>
-            </form>
-          </header>
-          <div class="card-banner">
-            <img class="product-image" src="<%= product.imageUrl %>" alt="<%= product.title %>" />
-          </div>
-          <div class="card-content">
-            <h5 class="product-price">$<%= product.price %></h5>
-            <p class="product-description"><%= product.description %></p>
-          </div>
-        </article>
-      <% } %>
+    <div class="products">
+        <% for(let product of products) { %>
+          <article class="card product-item">
+            <header class="card-header">
+              <h4 class="product-title">
+                <%= product.title %> (<%= product.CartItem.quantity %>)
+              </h4>
+              <form action="/cart-delete-item" method="POST">
+                <input type="hidden" value="<%= product.id %>" name="productId">
+                <button class="btn-action" type="submit">Delete</button>
+              </form>
+            </header>
+            <div class="card-banner">
+              <img class="product-image" src="<%= product.imageUrl %>" alt="<%= product.title %>" />
+            </div>
+            <div class="card-content">
+              <h5 class="product-price">$<%= product.price %></h5>
+              <p class="product-description"><%= product.description %></p>
+            </div>
+          </article>
+        <% } %>
+      </div>
+      <form class="order-form" action="/create-order" method="POST">
+        <button type="submit" class="btn-action">Order Now</button>
+      </form>
     <% } else { %>
       <h2>No products in cart</h2>
     <% } %>

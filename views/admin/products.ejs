@@ -4,29 +4,31 @@
 <body>
   <%- include('../includes/navigation.ejs') %>
 
-  <main class="products">
+  <main class="content-area">
     <% if(prods && prods.length > 0) { %>
-      <% for(let product of prods) { %>
-        <article class="card product-item">
-          <header class="card-header">
-            <h4 class="product-title"><%= product.title %></h4>
-          </header>
-          <div class="card-banner">
-            <img class="product-image" src="<%= product.imageUrl %>" alt="<%= product.title %>" />
-          </div>
-          <div class="card-content">
-            <h5 class="product-price">$<%= product.price %></h5>
-            <p class="product-description"><%= product.description %></p>
-          </div>
-          <div class="card-footer">
-            <a href="/admin/edit-product/<%=product.id%>" class="btn-action edit">Edit</a>
-            <form action="/admin/delete-product" method="POST" class="inline delete-form">
-              <input type="hidden" name="productId" value="<%=product.id%>">
-              <button class="btn-action delete" type="submit">Delete</button>
-            </form>
-          </div>
-        </article>
-      <% } %>
+      <div class="products">
+        <% for(let product of prods) { %>
+          <article class="card product-item">
+            <header class="card-header">
+              <h4 class="product-title"><%= product.title %></h4>
+            </header>
+            <div class="card-banner">
+              <img class="product-image" src="<%= product.imageUrl %>" alt="<%= product.title %>" />
+            </div>
+            <div class="card-content">
+              <h5 class="product-price">$<%= product.price %></h5>
+              <p class="product-description"><%= product.description %></p>
+            </div>
+            <div class="card-footer">
+              <a href="/admin/edit-product/<%=product.id%>" class="btn-action edit">Edit</a>
+              <form action="/admin/delete-product" method="POST" class="inline delete-form">
+                <input type="hidden" name="productId" value="<%=product.id%>">
+                <button class="btn-action delete" type="submit">Delete</button>
+              </form>
+            </div>
+          </article>
+        <% } %>
+      </div>
     <% } else { %>
       <h2>No products found</h2>
     <% } %>

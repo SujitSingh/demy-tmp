@@ -57,3 +57,7 @@ img, table {
 form.inline {
   display: inline-block;
 }
+
+main.content-area {
+  padding: 10px;
+}

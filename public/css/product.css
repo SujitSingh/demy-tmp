@@ -1,6 +1,5 @@
-main.products {
+.products {
   display: flex;
-  padding: 10px;
 }
 
 .card {
@@ -34,5 +33,10 @@ main.products {
   margin: 5px 0;
 }
 .card.product-item .card-footer {
+  text-align: center;
+}
+
+.order-form {
+  margin: 10px 0;
   text-align: center;
 }

@@ -13,6 +13,8 @@ const Product = require('./models/product');
 const User = require('./models/user');
 const Cart = require('./models/cart');
 const CartItem = require('./models/cart-item');
+const Order = require('./models/order');
+const OrderItem = require('./models/order-item');
 
 // defining templating engine
 app.set('view engine', 'ejs'); // templating engine to use
@@ -53,9 +55,12 @@ User.hasOne(Cart);
 Cart.belongsTo(User);
 Cart.belongsToMany(Product, { through: CartItem });
 Product.belongsToMany(Cart, { through: CartItem });
+Order.belongsTo(User);
+User.hasMany(Order);
+Order.belongsToMany(Product, { through: OrderItem });
 
 // sync database and tables
-sequelize.sync({ logging: false }).then(result => {
+sequelize.sync({ logging: false, force: false }).then(result => {
   console.log('Database sync complete');
   return User.findOne({ where: { email: 'admin1@test.com' }}).then(user => {
     if (!user) {
