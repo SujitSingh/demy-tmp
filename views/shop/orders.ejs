@@ -3,8 +3,38 @@
 </head>
 <body>
   <%- include('../includes/navigation.ejs') %>
-  <main>
-    <h2>Nothing there!</h2>
+  <main class="content-area">
+    <% if (orders && orders.length) { %>
+      <div class="orders">
+        <% orders.forEach(order => { %>
+          <p>Order ID - <%= order.id %></p>
+          <% if (order.Products && order.Products.length) { %>
+            <div class="products">
+              <% for(let product of order.Products) { %>
+                <article class="card product-item">
+                  <header class="card-header">
+                    <h4 class="product-title">
+                      <%= product.title %> (<%= product.OrderItem.quantity %>)
+                    </h4>
+                  </header>
+                  <div class="card-banner">
+                    <img class="product-image" src="<%= product.imageUrl %>" alt="<%= product.title %>" />
+                  </div>
+                  <div class="card-content">
+                    <h5 class="product-price">$<%= product.price %></h5>
+                    <p class="product-description"><%= product.description %></p>
+                  </div>
+                </article>
+              <% } %>
+            </div>
+          <% } else { %>
+            <h2>No products available!!!</h2>
+          <% } %>
+        <% }) %>
+      </div>
+    <% } else { %>
+      <h2>No order found!</h2>
+    <% } %>
   </main>
 
 <%- include('../includes/page-end.ejs') %>
