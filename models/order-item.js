@@ -1,6 +1,6 @@
 // @ts-check
 const Sequelize = require('sequelize');
-const sequelize = require('../utils/database');
+const sequelize = require('../utils/database').sequelize;
 
 const OrderItem = sequelize.define('OrderItem', {
   id: {

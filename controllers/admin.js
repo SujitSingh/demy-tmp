@@ -1,5 +1,10 @@
 // @ts-check
-const Product = require('../models/product');
+const demyConfig = require('../utils/config');
+
+let Product;
+if (!demyConfig.useMongoDB) {
+  Product = require('../models/product');
+}
 
 exports.getProducts = (req, res, next) => {
   req.user.getProducts().then(products => {
