@@ -1,10 +1,6 @@
 // @ts-check
 const demyConfig = require('../utils/config');
-
-let Product;
-if (!demyConfig.useMongoDB) {
-  Product = require('../models/product');
-}
+const Product = demyConfig.useMongoDB ? require('../models/mongo/product') : require('../models/product');
 
 exports.getProducts = (req, res, next) => {
   req.user.getProducts().then(products => {
@@ -31,13 +27,24 @@ exports.postAddProduct = (req, res, next) => {
   const imageUrl = req.body.imgUrl;
   const description = req.body.description;
   const price = req.body.price;
-  req.user.createProduct({
-    title, price, imageUrl, description
-  }).then(result => {
-    res.redirect('/admin/products');
-  }).catch(error => {
-    console.log(error);
-  });
+  if (demyConfig.useMongoDB) {
+    // using MongoDB
+    const product = new Product(title, price, imageUrl, description);
+    product.save().then(result => {
+      console.log(result);
+    }).catch(error => {
+      console.log(error);
+    });
+  } else {
+    // using Sequelize
+    req.user.createProduct({
+      title, price, imageUrl, description
+    }).then(result => {
+      res.redirect('/admin/products');
+    }).catch(error => {
+      console.log(error);
+    });
+  }
 }
 
 exports.getEditProduct = (req, res, next) => {
