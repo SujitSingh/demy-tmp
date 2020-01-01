@@ -16,25 +16,29 @@ function sequelizeConnection() {
   )
 }
 
-function mongoConnection() {
+function getMongoConnection() {
   const MongoClient = mongodb.MongoClient;
   const mongoDBURL = 'mongodb://root:passw0rd@localhost:27017/demy_nosql';
   return MongoClient.connect(mongoDBURL);
 }
 
+function mongoConnectHandler() {
+  return new Promise((resolve, reject) => {
+    getMongoConnection().then(connection => {
+      _mongoDbConnect = connection.db(); // save in variable
+      resolve(connection);
+    }).catch(error => {
+      console.log('MongoDB connection error');
+      reject(error);
+    });
+  });
+}
 
 // export sequelize connection object
 exports.sequelize = !demyConfig.useMongoDB ? sequelizeConnection() : undefined;
 
 // export MongoDB connection function
-exports.mongoConnect = demyConfig.useMongoDB ? function(callBack) {
-                      mongoConnection().then(connection => {
-                        _mongoDbConnect = connection.db(); // save in variable
-                        callBack();
-                      }).catch(error => {
-                        console.log('MongoDB connection error', error);
-                      });
-                    } : undefined
+exports.mongoConnection = demyConfig.useMongoDB ? mongoConnectHandler : undefined;
 
 // export MongoDB connection object
 exports.mongoDBConnect = function() {

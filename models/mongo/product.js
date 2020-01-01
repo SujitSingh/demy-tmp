@@ -3,12 +3,13 @@ const mongodb = require('mongodb');
 const mongoConnect = require('../../utils/database').mongoDBConnect;
 
 class Product {
-  constructor(title, price, imageUrl, description, id) {
+  constructor(id, title, price, imageUrl, description, userId) {
+    this._id = id ? new mongodb.ObjectId(id) : undefined,
     this.title = title;
     this.price = price;
     this.imageUrl = imageUrl;
     this.description = description;
-    this._id = id ? new mongodb.ObjectId(id) : undefined
+    this.userId = userId
   }
 
   addOne() {

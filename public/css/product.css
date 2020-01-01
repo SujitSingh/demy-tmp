@@ -13,7 +13,7 @@
 .card .card-banner img.product-image {
   display: block;
   margin: 10px auto;
-  max-width: 300px;
+  width: 300px;
   max-height: 200px;
 }
 .card .card-content {

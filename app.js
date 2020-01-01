@@ -7,14 +7,17 @@ const demyConfig = require('./utils/config');
 const dbConnections = require('./utils/database');
 
 const sequelize = !demyConfig.useMongoDB ? dbConnections.sequelize : undefined;
-const mongoConnect = demyConfig.useMongoDB ? dbConnections.mongoConnect : undefined;
+const mongoConnection = demyConfig.useMongoDB ? dbConnections.mongoConnection : undefined;
 
 const port = process.env.PORT || 3300;
 const app = express();
 
 let Product, User, Cart, CartItem, Order, OrderItem;
-if (!demyConfig.useMongoDB) {
-  // database models
+if (demyConfig.useMongoDB) {
+  // MongoDB database models
+  User = require('./models/mongo/user');
+} else {
+  // Sequelize database models
   Product = require('./models/product');
   User = require('./models/user');
   Cart = require('./models/cart');
@@ -39,16 +42,16 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(rootDir, 'public')));
 
 app.use((req, res, next) => {
-  if (!demyConfig.useMongoDB) {
-    User.findOne({ where: { email: 'admin1@test.com' }}).then(user => {
-      req.user = user;
-      next();
-    }).catch(error => {
-      console.log(error);
-    });
-  } else {
+  const adminEmail = 'admin1@test.com';
+  const userPromise = demyConfig.useMongoDB ? 
+                      User.findOne({ email: adminEmail }) : 
+                      User.findOne({ where: { email: adminEmail }});
+  userPromise.then(user => {
+    req.user = user;
     next();
-  }
+  }).catch(error => {
+    console.log(error);
+  });
 });
 
 // using routes
@@ -58,14 +61,26 @@ app.use(shopRoutes);
 app.use(errorCtrl.notFound);
 
 const appServer = http.createServer(app);
+const adminEmail = 'admin1@test.com';
 
 if (demyConfig.useMongoDB) {
   // connect to MongoDB
-  mongoConnect(() => {
+  mongoConnection().then(connection => {
     console.log('MongoDB connected');
+    return User.findOne({ email: adminEmail });
+  }).then(user => {
+    if (user) {
+      return true; // user exists
+    }
+    // create new user
+    const newUser = new User('Admin1', adminEmail);
+    return newUser.addOne();
+  }).then(() => {
     appServer.listen(port, () => {
       console.log(`Listening at http://localhost:${port}/`);
     });
+  }).catch(error => {
+    console.log(error.message || 'Failed to start server');
   });
 } else {
   // connect to SQL DB
@@ -83,9 +98,9 @@ if (demyConfig.useMongoDB) {
   // sync database and tables
   sequelize.sync({ logging: false, force: false }).then(result => {
     console.log('Database sync complete');
-    return User.findOne({ where: { email: 'admin1@test.com' }}).then(user => {
+    return User.findOne({ where: { email: adminEmail }}).then(user => {
       if (!user) {
-        return User.create({name: 'Admin1', email: 'admin1@test.com'});
+        return User.create({name: 'Admin1', email: adminEmail});
       }
       return user;
     });

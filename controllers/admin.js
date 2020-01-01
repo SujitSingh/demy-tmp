@@ -17,11 +17,11 @@ exports.getProducts = (req, res, next) => {
 }
 
 exports.getAddProduct = (req, res, next) => {
-  res.render('admin/edit-product', { 
+  res.render('admin/edit-product', {
     pageTitle: 'Add product', 
     path: '/admin/add-product',
     editing: false
-  });  
+  });
 }
 
 exports.postAddProduct = (req, res, next) => {
@@ -32,7 +32,7 @@ exports.postAddProduct = (req, res, next) => {
   let productPromise;
   if (demyConfig.useMongoDB) {
     // using MongoDB
-    const product = new Product(title, price, imageUrl, description);
+    const product = new Product(null, title, price, imageUrl, description, req.user._id);
     productPromise = product.addOne();
   } else {
     // using Sequelize
@@ -85,7 +85,7 @@ exports.postEditProduct = (req, res, next) => {
     // update product
     if (demyConfig.useMongoDB) {
       // MongoDB
-      const productObj = new Product(title, price, imgUrl, description, productId);
+      const productObj = new Product(productId, title, price, imgUrl, description, req.user._id);
       return productObj.updateOne();
     } else {
       // Sequelize
