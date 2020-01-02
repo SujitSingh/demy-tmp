@@ -11,7 +11,12 @@
           <article class="card product-item">
             <header class="card-header">
               <h4 class="product-title">
-                <%= product.title %> (<%= product.CartItem.quantity %>)
+                <%= product.title %> 
+                <% if (product.CartItem) { %> 
+                  (<%= product.CartItem.quantity %>) 
+                <% } else { %>
+                  (<%= product.quantity %>)
+                <% } %>
               </h4>
               <form action="/cart-delete-item" method="POST">
                 <input type="hidden" value="<%= product._id || product.id %>" name="productId">

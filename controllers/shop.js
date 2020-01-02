@@ -46,9 +46,12 @@ exports.getProduct = (req, res, next) => {
 }
 
 exports.getCart = (req, res, next) => {
-  req.user.getCart().then(cart => {
-    return cart.getProducts();
-  }).then(products => {
+  const cartPromise = demyConfig.useMongoDB ? req.user.getCartItems() :
+                      req.user.getCart().then(cart => {
+                        return cart.getProducts()
+                      });
+
+  cartPromise.then(products => {
     res.render('shop/cart', {
       pageTitle: 'My cart',
       path: '/cart',
@@ -78,29 +81,41 @@ exports.postCartDeleteProduct = (req, res, next) => {
 
 exports.addToCart = (req, res, next) => {
   const productId = req.body.productId;
-  let fetchedCart;
-  let newQuantity = 1;
-  req.user.getCart().then(cart => {
-    fetchedCart = cart;
-    return cart.getProducts({ where: { id: productId }})
-  }).then(productArr => {
-    let product;
-    if (productArr && productArr.length) {
-      product = productArr[0];
-    }
-    if (product) {
-      const oldQuantity = product.CartItem.quantity;
-      newQuantity += oldQuantity;
-      return product;
-    }
-    return Product.findByPk(productId);
-  }).then(product => {
-    return fetchedCart.addProduct(product, { through: { quantity: newQuantity }});
-  }).then(() => {
-    res.redirect('/cart');
-  }).catch(error => {
-    console.log(error);
-  });
+  if (demyConfig.useMongoDB) {
+    // MongoDB
+    Product.findById(productId).then(product => {
+      return req.user.addToCart(product);
+    }).then(result => {
+      res.redirect('/cart');
+    }).catch(error => {
+      console.log(error);
+    });
+  } else {
+    // Sequelize
+    let fetchedCart;
+    let newQuantity = 1;
+    req.user.getCart().then(cart => {
+      fetchedCart = cart;
+      return cart.getProducts({ where: { id: productId }})
+    }).then(productArr => {
+      let product;
+      if (productArr && productArr.length) {
+        product = productArr[0];
+      }
+      if (product) {
+        const oldQuantity = product.CartItem.quantity;
+        newQuantity += oldQuantity;
+        return product;
+      }
+      return Product.findByPk(productId);
+    }).then(product => {
+      return fetchedCart.addProduct(product, { through: { quantity: newQuantity }});
+    }).then(() => {
+      res.redirect('/cart');
+    }).catch(error => {
+      console.log(error);
+    });
+  }
 }
 
 exports.getOrders = (req, res, next) => {

@@ -47,7 +47,7 @@ app.use((req, res, next) => {
                       User.findOne({ email: adminEmail }) : 
                       User.findOne({ where: { email: adminEmail }});
   userPromise.then(user => {
-    req.user = user;
+    req.user = user && demyConfig.useMongoDB ? new User(user._id, user.name, user.email, user.cart) : user;
     next();
   }).catch(error => {
     console.log(error);
@@ -73,7 +73,7 @@ if (demyConfig.useMongoDB) {
       return true; // user exists
     }
     // create new user
-    const newUser = new User('Admin1', adminEmail);
+    const newUser = new User(null, 'Admin1', adminEmail);
     return newUser.addOne();
   }).then(() => {
     appServer.listen(port, () => {
