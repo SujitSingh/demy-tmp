@@ -59,6 +59,16 @@ class User {
       });
     })
   }
+
+  deleteCartItem(productId) {
+    const updatedCart = this.cart.items.filter(item => {
+      item.productId.toString() !== productId.toString();
+    });
+    return mongoConnect().collection('Users').updateOne(
+      { _id: new mongodb.ObjectId(this._id)},
+      { $set: { cart: { items: updatedCart } } }
+    );
+  }
 }
 
 module.exports = User;

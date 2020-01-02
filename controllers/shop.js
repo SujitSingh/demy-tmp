@@ -64,15 +64,18 @@ exports.getCart = (req, res, next) => {
 
 exports.postCartDeleteProduct = (req, res, next) => {
   let productId = req.body.productId;
-  req.user.getCart().then(cart => {
-    return cart.getProducts({ where: { id: productId }});
-  }).then(productsArr => {
-    if (productsArr && productsArr.length) {
-      const product = productsArr[0];
-      return product.destroy();
-    }
-    return false; // invalid product id
-  }).then(() => {
+  const cartPromise = demyConfig.useMongoDB ? req.user.deleteCartItem(productId) :
+                      req.user.getCart().then(cart => {
+                        return cart.getProducts({ where: { id: productId }});
+                      }).then(productsArr => {
+                        if (productsArr && productsArr.length) {
+                          const product = productsArr[0];
+                          return product.destroy();
+                        }
+                        return false; // invalid product id
+                      });
+
+  cartPromise.then(() => {
     res.redirect('/cart');
   }).catch(error => {
     console.log(error);
