@@ -122,7 +122,8 @@ exports.addToCart = (req, res, next) => {
 }
 
 exports.getOrders = (req, res, next) => {
-  req.user.getOrders({ include: ['Products'] }).then(orders => {
+  const ordersPromise = demyConfig.useMongoDB ? req.user.getOrders() : req.user.getOrders({ include: ['Products'] });
+  ordersPromise.then(orders => {
     res.render('shop/orders', {
       pageTitle: 'My orders',
       path: '/orders',
@@ -135,21 +136,24 @@ exports.getOrders = (req, res, next) => {
 
 exports.postOrders = (req, res, next) => {
   let fetchedCart;
-  req.user.getCart().then(cart => {
-    fetchedCart = cart;
-    return cart.getProducts();
-  }).then(products => {
-    return req.user.createOrder().then(order => {
-      return order.addProducts(products.map(product => {
-        product.OrderItem = {
-          quantity: product.CartItem.quantity
-        };
-        return product;
-      }));
-    });
-  }).then(result => {
-    return fetchedCart.setProducts(null); // empty the cart
-  }).then(() => {
+  const orderPromise = demyConfig.useMongoDB ? req.user.addOrder(): 
+                      req.user.getCart().then(cart => {
+                        fetchedCart = cart;
+                        return cart.getProducts();
+                      }).then(products => {
+                        return req.user.createOrder().then(order => {
+                          return order.addProducts(products.map(product => {
+                            product.OrderItem = {
+                              quantity: product.CartItem.quantity
+                            };
+                            return product;
+                          }));
+                        });
+                      }).then(result => {
+                        return fetchedCart.setProducts(null); // empty the cart
+                      });
+
+  orderPromise.then(() => {
     res.redirect('/orders');
   }).catch(error => {
     console.log(error);

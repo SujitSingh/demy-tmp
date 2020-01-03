@@ -7,14 +7,14 @@
     <% if (orders && orders.length) { %>
       <div class="orders">
         <% orders.forEach(order => { %>
-          <p>Order ID - <%= order.id %></p>
-          <% if (order.Products && order.Products.length) { %>
+          <p>Order ID - <%= order._id || order.id %></p>
+          <% if ((order.items && order.items.length) || (order.Products && order.Products.length)) { %>
             <div class="products">
-              <% for(let product of order.Products) { %>
+              <% for(let product of order.items || order.Products) { %>
                 <article class="card product-item">
                   <header class="card-header">
                     <h4 class="product-title">
-                      <%= product.title %> (<%= product.OrderItem.quantity %>)
+                      <%= product.title %> (<%= product.quantity || product.OrderItem.quantity %>)
                     </h4>
                   </header>
                   <div class="card-banner">

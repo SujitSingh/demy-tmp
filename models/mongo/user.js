@@ -69,6 +69,33 @@ class User {
       { $set: { cart: { items: updatedCart } } }
     );
   }
+
+  addOrder() {
+    // get cart items
+    return this.getCartItems().then(products => {
+      // add new order
+      const order = {
+        user: {
+          _id: this._id,
+          name: this.name,
+          email: this.email
+        },
+        items: products
+      };
+      return mongoConnect().collection('Orders').insertOne(order);
+    }).then(result => {
+      // clear cart items
+      this.cart = { items: [] }
+      return mongoConnect().collection('Users').updateOne(
+        { _id: new mongodb.ObjectId(this._id)},
+        { $set: { cart: { items: [] } } }
+      );
+    });
+  }
+
+  getOrders() {
+    return mongoConnect().collection('Orders').find({'user._id': new mongodb.ObjectId(this._id)}).toArray();
+  }
 }
 
 module.exports = User;
