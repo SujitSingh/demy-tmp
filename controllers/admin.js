@@ -3,7 +3,7 @@ const demyConfig = require('../utils/config');
 const Product = demyConfig.useMongoDB ? require('../models/mongo/product') : require('../models/product');
 
 exports.getProducts = (req, res, next) => {
-  const productPromise = demyConfig.useMongoDB ? Product.getAll() : req.user.getProducts();
+  const productPromise = demyConfig.useMongoDB ? Product.find() : req.user.getProducts();
 
   productPromise.then(products => {
     res.render('admin/products', {
@@ -31,9 +31,9 @@ exports.postAddProduct = (req, res, next) => {
   const price = req.body.price;
   let productPromise;
   if (demyConfig.useMongoDB) {
-    // using MongoDB
-    const product = new Product(null, title, price, imageUrl, description, req.user._id);
-    productPromise = product.addOne();
+    // using Mongoose
+    const product = new Product({title, price, imageUrl, description, userId: req.user});
+    productPromise = product.save();
   } else {
     // using Sequelize
     productPromise = req.user.createProduct({
@@ -78,15 +78,19 @@ exports.postEditProduct = (req, res, next) => {
   const price = req.body.price;
   // check existing Product
   let getProductPromise = demyConfig.useMongoDB ? Product.findById(productId) : Product.findByPk(productId);
+
   getProductPromise.then(product => {
     if (!product) {
       return;
     }
     // update product
     if (demyConfig.useMongoDB) {
-      // MongoDB
-      const productObj = new Product(productId, title, price, imgUrl, description, req.user._id);
-      return productObj.updateOne();
+      // Mongoose
+      product.title = title;
+      product.price = price;
+      product.imageUrl = imgUrl;
+      product.description = description;
+      return product.save();
     } else {
       // Sequelize
       product.title = title;
@@ -107,7 +111,7 @@ exports.postDeleteProduct = (req, res, next) => {
   if (productId) {
     let productPromise;
     if (demyConfig.useMongoDB) {
-      productPromise = Product.deleteById(productId);
+      productPromise = Product.findByIdAndRemove(productId);
     } else {
       productPromise = Product.findOne({ where: { id: productId, UserId: req.user.id}}).then(product => {
         return product.destroy(); // delete product

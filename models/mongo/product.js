@@ -1,36 +1,16 @@
 //@ts-check
-const mongodb = require('mongodb');
-const mongoConnect = require('../../utils/database').mongoDBConnect;
+const mongoose = require('mongoose');
 
-class Product {
-  constructor(id, title, price, imageUrl, description, userId) {
-    this._id = id ? new mongodb.ObjectId(id) : undefined,
-    this.title = title;
-    this.price = price;
-    this.imageUrl = imageUrl;
-    this.description = description;
-    this.userId = userId
+const productSchema = new mongoose.Schema({
+  title: { type: String, required: true },
+  price: { type: Number, required: true },
+  imageUrl: { type: String, required: true },
+  description: { type: String, required: true },
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
   }
+});
 
-  addOne() {
-    return mongoConnect().collection('Products').insertOne(this);
-  }
-
-  static getAll() {
-    return mongoConnect().collection('Products').find().toArray();
-  }
-
-  static findById(prodId) {
-    return mongoConnect().collection('Products').findOne({_id: new mongodb.ObjectId(prodId)});
-  }
-
-  updateOne() {
-    return mongoConnect().collection('Products').updateOne({ _id: this._id }, { $set: this });
-  }
-
-  static deleteById(id) {
-    return mongoConnect().collection('Products').deleteOne({ _id: new mongodb.ObjectId(id) });
-  }
-}
-
-module.exports = Product;
+module.exports = mongoose.model('Product', productSchema, 'Products');

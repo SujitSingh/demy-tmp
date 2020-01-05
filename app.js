@@ -11,6 +11,7 @@ const mongoConnection = demyConfig.useMongoDB ? dbConnections.mongoConnection : 
 
 const port = process.env.PORT || 3300;
 const app = express();
+const adminEmail = 'admin1@test.com';
 
 let Product, User, Cart, CartItem, Order, OrderItem;
 if (demyConfig.useMongoDB) {
@@ -42,12 +43,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(rootDir, 'public')));
 
 app.use((req, res, next) => {
-  const adminEmail = 'admin1@test.com';
   const userPromise = demyConfig.useMongoDB ? 
                       User.findOne({ email: adminEmail }) : 
                       User.findOne({ where: { email: adminEmail }});
   userPromise.then(user => {
-    req.user = user && demyConfig.useMongoDB ? new User(user._id, user.name, user.email, user.cart) : user;
+    req.user = user && demyConfig.useMongoDB ? user : user;
     next();
   }).catch(error => {
     console.log(error);
@@ -61,7 +61,6 @@ app.use(shopRoutes);
 app.use(errorCtrl.notFound);
 
 const appServer = http.createServer(app);
-const adminEmail = 'admin1@test.com';
 
 if (demyConfig.useMongoDB) {
   // connect to MongoDB
@@ -73,8 +72,12 @@ if (demyConfig.useMongoDB) {
       return true; // user exists
     }
     // create new user
-    const newUser = new User(null, 'Admin1', adminEmail);
-    return newUser.addOne();
+    const newUser = new User({
+      name: 'Admin1',
+      email: adminEmail,
+      cart: { items: [] }
+    });
+    return newUser.save();
   }).then(() => {
     appServer.listen(port, () => {
       console.log(`Listening at http://localhost:${port}/`);

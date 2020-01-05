@@ -3,7 +3,7 @@ const demyConfig = require('../utils/config');
 const Product = demyConfig.useMongoDB ? require('../models/mongo/product') : require('../models/product');
 
 exports.getIndex = (req, res, next) => {
-  const productsPromise = demyConfig.useMongoDB ? Product.getAll() : Product.findAll();
+  const productsPromise = demyConfig.useMongoDB ? Product.find() : Product.findAll();
 
   productsPromise.then(products => {
     res.render('shop/index', {
@@ -17,7 +17,7 @@ exports.getIndex = (req, res, next) => {
 }
 
 exports.getProducts = (req, res, next) => {
-  const productsPromise = demyConfig.useMongoDB ? Product.getAll() : Product.findAll();
+  const productsPromise = demyConfig.useMongoDB ? Product.find() : Product.findAll();
 
   productsPromise.then(products => {
     res.render('shop/product-list', {
@@ -32,9 +32,9 @@ exports.getProducts = (req, res, next) => {
 
 exports.getProduct = (req, res, next) => {
   const productId = req.params.productId;
-  const productPromise = demyConfig.useMongoDB ? Product.findById : Product.findByPk;
+  const productPromise = demyConfig.useMongoDB ? Product.findById(productId) : Product.findByPk(productId);
 
-  productPromise(productId).then(product => {
+  productPromise.then(product => {
     res.render('shop/product-details', {
       pageTitle: 'Product detail', 
       product: product,

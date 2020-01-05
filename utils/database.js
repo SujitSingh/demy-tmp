@@ -1,10 +1,9 @@
 // @ts-check
 const Sequelize = require('sequelize');
-const mongodb = require('mongodb');
+const mongoose = require('mongoose');
 const demyConfig = require('./config');
-let _mongoDbConnect;
 
-function sequelizeConnection() {
+function connectSqlDB() {
   return new Sequelize(
     process.env.DB_NAME || 'demy_sql',
     process.env.DB_USER || 'root',
@@ -16,37 +15,16 @@ function sequelizeConnection() {
   )
 }
 
-function getMongoConnection() {
-  const MongoClient = mongodb.MongoClient;
-  const mongoDBURL = 'mongodb://root:passw0rd@localhost:27017/demy_nosql';
-  return MongoClient.connect(mongoDBURL);
-}
-
-function mongoConnectHandler() {
-  return new Promise((resolve, reject) => {
-    getMongoConnection().then(connection => {
-      _mongoDbConnect = connection.db(); // save in variable
-      resolve(connection);
-    }).catch(error => {
-      console.log('MongoDB connection error');
-      reject(error);
-    });
-  });
+function connectMongoDB() {
+  const mongoConnectURL = 'mongodb://root:passw0rd@localhost:27017/demy_nosql';
+  return mongoose.connect(mongoConnectURL, {useNewUrlParser: true});
 }
 
 // export sequelize connection object
-exports.sequelize = !demyConfig.useMongoDB ? sequelizeConnection() : undefined;
+exports.sequelize = !demyConfig.useMongoDB ? connectSqlDB() : undefined;
 
 // export MongoDB connection function
-exports.mongoConnection = demyConfig.useMongoDB ? mongoConnectHandler : undefined;
-
-// export MongoDB connection object
-exports.mongoDBConnect = function() {
-  if (_mongoDbConnect) {
-    return _mongoDbConnect;
-  }
-  throw 'MongoDB connection error';
-}
+exports.mongoConnection = demyConfig.useMongoDB ? connectMongoDB : undefined;
 
 
 // const mysql = require('mysql2');
