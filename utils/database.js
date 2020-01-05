@@ -17,7 +17,7 @@ function connectSqlDB() {
 
 function connectMongoDB() {
   const mongoConnectURL = 'mongodb://root:passw0rd@localhost:27017/demy_nosql';
-  return mongoose.connect(mongoConnectURL, {useNewUrlParser: true});
+  return mongoose.connect(mongoConnectURL, {useNewUrlParser: true, useFindAndModify: false});
 }
 
 // export sequelize connection object

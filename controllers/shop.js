@@ -136,22 +136,31 @@ exports.getOrders = (req, res, next) => {
 
 exports.postOrders = (req, res, next) => {
   let fetchedCart;
-  const orderPromise = demyConfig.useMongoDB ? req.user.addOrder(): 
-                      req.user.getCart().then(cart => {
-                        fetchedCart = cart;
-                        return cart.getProducts();
-                      }).then(products => {
-                        return req.user.createOrder().then(order => {
-                          return order.addProducts(products.map(product => {
-                            product.OrderItem = {
-                              quantity: product.CartItem.quantity
-                            };
-                            return product;
-                          }));
-                        });
-                      }).then(result => {
-                        return fetchedCart.setProducts(null); // empty the cart
-                      });
+  function mongoPostOrder() {
+    return req.user.addOrder().then(result => {
+      return req.user.clearCart();
+    });
+  }
+
+  function sqlPostOrder() {
+    return req.user.getCart().then(cart => {
+      fetchedCart = cart;
+      return cart.getProducts();
+    }).then(products => {
+      return req.user.createOrder().then(order => {
+        return order.addProducts(products.map(product => {
+          product.OrderItem = {
+            quantity: product.CartItem.quantity
+          };
+          return product;
+        }));
+      });
+    }).then(result => {
+      return fetchedCart.setProducts(null); // empty the cart
+    });
+  }
+
+  const orderPromise = demyConfig.useMongoDB ? mongoPostOrder() : sqlPostOrder();
 
   orderPromise.then(() => {
     res.redirect('/orders');

@@ -8,21 +8,21 @@
       <div class="orders">
         <% orders.forEach(order => { %>
           <p>Order ID - <%= order._id || order.id %></p>
-          <% if ((order.items && order.items.length) || (order.Products && order.Products.length)) { %>
+          <% if ((order.products && order.products.length) || (order.Products && order.Products.length)) { %>
             <div class="products">
-              <% for(let product of order.items || order.Products) { %>
+              <% for(let product of order.products || order.Products) { %>
                 <article class="card product-item">
                   <header class="card-header">
                     <h4 class="product-title">
-                      <%= product.title %> (<%= product.quantity || product.OrderItem.quantity %>)
+                      <%= product.title || product.product.title %> (<%= product.quantity || product.OrderItem.quantity %>)
                     </h4>
                   </header>
                   <div class="card-banner">
-                    <img class="product-image" src="<%= product.imageUrl %>" alt="<%= product.title %>" />
+                    <img class="product-image" src="<%= product.imageUrl || product.product.imageUrl %>" alt="<%= product.title || product.product.title %>" />
                   </div>
                   <div class="card-content">
-                    <h5 class="product-price">$<%= product.price %></h5>
-                    <p class="product-description"><%= product.description %></p>
+                    <h5 class="product-price">$<%= product.price || product.product.price %></h5>
+                    <p class="product-description"><%= product.description || product.product.description %></p>
                   </div>
                 </article>
               <% } %>
