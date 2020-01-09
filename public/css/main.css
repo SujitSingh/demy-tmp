@@ -12,12 +12,23 @@ img, table {
   background-color: #3B3B98;
   display: flex;
 }
+
+.main-header-nav {
+  display: flex;
+  flex: 1;
+}
+
 .main-header-list{
   display: flex;
+  flex: 1;
   margin: 0;
   padding: 0;
   list-style-type: none;
 }
+.main-header-list.auth-links {
+  flex: none;
+}
+
 .main-header-list li {
   display: inline;
 }
