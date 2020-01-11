@@ -16,7 +16,7 @@ function connectSqlDB() {
 }
 
 function connectMongoDB() {
-  const mongoConnectURL = 'mongodb://root:passw0rd@localhost:27017/demy_nosql';
+  const mongoConnectURL = demyConfig.mongoDBPath;
   return mongoose.connect(mongoConnectURL, {useNewUrlParser: true, useFindAndModify: false});
 }
 

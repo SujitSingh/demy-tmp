@@ -13,12 +13,14 @@
       <li>
         <a href="/orders" class="<%= path === '/orders' ? 'active' : '' %>">Orders</a>
       </li>
-      <li>
-        <a href="/admin/add-product" class="<%= path === '/admin/add-product' ? 'active' : '' %>">Add product</a>
-      </li>
-      <li>
-        <a href="/admin/products" class="<%= path === '/admin/products' ? 'active' : '' %>">Admin Products</a>
-      </li>
+      <% if (isAuthenticated) { %>
+        <li>
+          <a href="/admin/add-product" class="<%= path === '/admin/add-product' ? 'active' : '' %>">Add product</a>
+        </li>
+        <li>
+          <a href="/admin/products" class="<%= path === '/admin/products' ? 'active' : '' %>">Admin Products</a>
+        </li>
+      <% } %>
     </ul>
     <ul class="main-header-list auth-links">
       <li>

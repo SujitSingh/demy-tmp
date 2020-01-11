@@ -3,6 +3,9 @@ const path = require('path');
 const rootDir = require('./utils/paths');
 const http = require('http');
 const express = require('express');
+const session = require('express-session');
+const MongoDBStrore = require('connect-mongodb-session')(session);
+
 const demyConfig = require('./utils/config');
 const dbConnections = require('./utils/database');
 
@@ -12,6 +15,12 @@ const mongoConnection = demyConfig.useMongoDB ? dbConnections.mongoConnection : 
 const port = process.env.PORT || 3300;
 const app = express();
 const adminEmail = 'admin1@test.com';
+const sessionStore = new MongoDBStrore(
+  { uri: demyConfig.mongoDBPath, collection: 'Sessions' },
+  function(error) {
+    console.log('MongoDB(sessions) connection error');
+  }
+);
 
 let Product, User, Cart, CartItem, Order, OrderItem;
 if (demyConfig.useMongoDB) {
@@ -34,11 +43,18 @@ app.set('views', 'views'); // path of views
 // importing routes
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
+const authRoutes = require('./routes/auth');
 
 const errorCtrl = require('./controllers/error');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(session({
+  secret: demyConfig.sessionSecret,
+  resave: false, 
+  saveUninitialized: false,
+  store: sessionStore
+}));
 
 app.use(express.static(path.join(rootDir, 'public')));
 
@@ -57,6 +73,7 @@ app.use((req, res, next) => {
 // using routes
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
+app.use(authRoutes);
 // 404 route
 app.use(errorCtrl.notFound);
 
