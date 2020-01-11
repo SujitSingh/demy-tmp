@@ -32,17 +32,25 @@ img, table {
 .main-header-list li {
   display: inline;
 }
-.main-header-list li a {
+.main-header-list li a,
+.main-header-list li button {
   color: #fff;
   display: block;
   padding: 5px 10px;
   text-decoration: none;
   font-size: 16px;
+  border: none;
+  background: no-repeat;
+  cursor: pointer;
 }
 .main-header-list li a:hover,
 .main-header-list li a:focus,
 .main-header-list li a:active,
-.main-header-list li a.active {
+.main-header-list li a.active,
+.main-header-list li button:hover,
+.main-header-list li button:focus,
+.main-header-list li button:active,
+.main-header-list li button.active {
   color: #badc58;
 }
 
