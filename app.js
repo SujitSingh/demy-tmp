@@ -18,7 +18,9 @@ const adminEmail = 'admin1@test.com';
 const sessionStore = new MongoDBStrore(
   { uri: demyConfig.mongoDBPath, collection: 'Sessions' },
   function(error) {
-    console.log('MongoDB(sessions) connection error');
+    if (error) {
+      console.log('MongoDB(sessions) connection error');
+    }
   }
 );
 
@@ -59,8 +61,11 @@ app.use(session({
 app.use(express.static(path.join(rootDir, 'public')));
 
 app.use((req, res, next) => {
+  if (!req.session.user) {
+    return next();
+  }
   const userPromise = demyConfig.useMongoDB ? 
-                      User.findOne({ email: adminEmail }) : 
+                      User.findById(req.session.user._id) : 
                       User.findOne({ where: { email: adminEmail }});
   userPromise.then(user => {
     req.user = user && demyConfig.useMongoDB ? user : user;

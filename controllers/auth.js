@@ -1,3 +1,7 @@
+const User = require('../models/mongo/user');
+const demyConfig = require('../utils/config');
+const adminEmail = 'admin1@test.com';
+
 exports.getLogin = (req, res, next) => {
   res.render('auth/login', {
     path : '/login',
@@ -7,8 +11,24 @@ exports.getLogin = (req, res, next) => {
 }
 
 exports.postLogin = (req, res, next) => {
-  req.session.isLoggedIn = true;
-  res.redirect('/');
+  const userPromise = demyConfig.useMongoDB ? 
+                      User.findOne({ email: adminEmail }) : 
+                      User.findOne({ where: { email: adminEmail }});
+
+  userPromise.then(user => {
+    req.session.isLoggedIn = true;
+    req.session.user = user;
+    // optional. Confirm if session saves
+    req.session.save(error => {
+      if (error) { 
+        console.log('Error while saving user session');
+      } else {
+        res.redirect('/');
+      }
+    });
+  }).catch(error => {
+    console.log(error);
+  });
 }
 
 exports.postLogout = (req, res, next) => {
