@@ -46,6 +46,7 @@ app.set('views', 'views'); // path of views
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 const authRoutes = require('./routes/auth');
+const checkAuth = require('./middleware/check-auth');
 
 const errorCtrl = require('./controllers/error');
 
@@ -76,7 +77,7 @@ app.use((req, res, next) => {
 });
 
 // using routes
-app.use('/admin', adminRoutes);
+app.use('/admin', checkAuth.isLoggedIn, adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);
 // 404 route
