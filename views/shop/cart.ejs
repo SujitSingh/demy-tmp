@@ -34,6 +34,7 @@
         <% } %>
       </div>
       <form class="order-form" action="/create-order" method="POST">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
         <button type="submit" class="btn-action">Order Now</button>
       </form>
     <% } else { %>

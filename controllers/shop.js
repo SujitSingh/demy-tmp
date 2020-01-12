@@ -9,8 +9,7 @@ exports.getIndex = (req, res, next) => {
     res.render('shop/index', {
       pageTitle: 'Shop',
       path: '/',
-      prods: products,
-      isAuthenticated: req.session.isLoggedIn
+      prods: products
     });
   }).catch(error => {
     console.log(error);

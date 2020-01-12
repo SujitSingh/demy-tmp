@@ -4,6 +4,7 @@ const rootDir = require('./utils/paths');
 const http = require('http');
 const express = require('express');
 const session = require('express-session');
+const csurf = require('csurf');
 const MongoDBStrore = require('connect-mongodb-session')(session);
 
 const demyConfig = require('./utils/config');
@@ -23,6 +24,7 @@ const sessionStore = new MongoDBStrore(
     }
   }
 );
+const csrfProtection = csurf({ });
 
 let Product, User, Cart, CartItem, Order, OrderItem;
 if (demyConfig.useMongoDB) {
@@ -58,6 +60,7 @@ app.use(session({
   saveUninitialized: false,
   store: sessionStore
 }));
+app.use(csrfProtection);
 
 app.use(express.static(path.join(rootDir, 'public')));
 
@@ -74,6 +77,12 @@ app.use((req, res, next) => {
   }).catch(error => {
     console.log(error);
   });
+});
+// common values for template views
+app.use((req, res, next) => {
+  res.locals.isAuthenticated = req.session.isLoggedIn;
+  res.locals.csrfToken = req.csrfToken();
+  next();
 });
 
 // using routes

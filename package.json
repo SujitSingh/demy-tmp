@@ -11,6 +11,7 @@
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "connect-mongodb-session": "^2.2.0",
+    "csurf": "^1.10.0",
     "ejs": "^2.6.1",
     "express": "^4.16.4",
     "express-session": "^1.17.0",
