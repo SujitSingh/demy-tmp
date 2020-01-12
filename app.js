@@ -63,7 +63,7 @@ app.use(session({
 app.use(csrfProtection);
 
 app.use(express.static(path.join(rootDir, 'public')));
-
+// add user details/object under request
 app.use((req, res, next) => {
   if (!req.session.user) {
     return next();

@@ -6,8 +6,7 @@ const adminEmail = 'admin1@test.com';
 exports.getLogin = (req, res, next) => {
   res.render('auth/login', {
     path : '/login',
-    pageTitle: 'Login',
-    isAuthenticated: req.session.isLoggedIn
+    pageTitle: 'Login'
   });
 }
 
@@ -49,8 +48,7 @@ exports.postLogin = (req, res, next) => {
 exports.getSignup = (req, res, next) => {
   res.render('auth/signup', {
     path : '/signup',
-    pageTitle: 'Sign Up',
-    isAuthenticated: req.session.isLoggedIn
+    pageTitle: 'Sign Up'
   });
 }
 
