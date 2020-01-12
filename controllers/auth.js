@@ -3,10 +3,13 @@ const User = require('../models/mongo/user');
 const demyConfig = require('../utils/config');
 
 exports.getLogin = (req, res, next) => {
+  let flashMessages = req.flash('error');
+  flashMessages = flashMessages.length ? flashMessages : '';
+
   res.render('auth/login', {
     path : '/login',
     pageTitle: 'Login',
-    errorMessage: req.flash('error')
+    errorMessage: flashMessages
   });
 }
 
@@ -20,7 +23,7 @@ exports.postLogin = (req, res, next) => {
 
   userPromise.then(user => {
     if (!user) {
-      req.flash('error', 'Invalid credentials');
+      req.flash('error', 'User not found');
       return res.redirect('/login');
     }
     // compare password
@@ -49,10 +52,13 @@ exports.postLogin = (req, res, next) => {
 }
 
 exports.getSignup = (req, res, next) => {
+  let flashMessages = req.flash('error');
+  flashMessages = flashMessages.length ? flashMessages : '';
+
   res.render('auth/signup', {
     path : '/signup',
     pageTitle: 'Sign Up',
-    errorMessage: req.flash('error')
+    errorMessage: flashMessages
   });
 }
 
@@ -73,6 +79,7 @@ exports.postSignup = (req, res, next) => {
 
   User.findOne({ email: email }).then(result => {
     if (result) {
+      req.flash('error', 'This email already exists');
       return res.redirect('/signup'); // user already exists
     }
     return bcryptjs.hash(password, 12).then(hashPassword => {
