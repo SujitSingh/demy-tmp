@@ -6,6 +6,9 @@
   <%- include('../includes/navigation.ejs') %>
 
   <main class="auth-form-wrap">
+    <% if (errorMessage) { %>
+      <p class="error-message"><%= errorMessage %></p>
+    <% } %>
     <form class="signup-form" action="/signup" method="POST">
       <div class="form-control">
         <label for="name">Name:</label>

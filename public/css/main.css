@@ -80,3 +80,7 @@ form.inline {
 main.content-area {
   padding: 10px;
 }
+
+.error-message {
+  color: #ff5722;
+}

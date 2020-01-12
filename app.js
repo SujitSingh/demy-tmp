@@ -5,6 +5,7 @@ const http = require('http');
 const express = require('express');
 const session = require('express-session');
 const csurf = require('csurf');
+const flash = require('connect-flash');
 const MongoDBStrore = require('connect-mongodb-session')(session);
 
 const demyConfig = require('./utils/config');
@@ -61,6 +62,7 @@ app.use(session({
   store: sessionStore
 }));
 app.use(csrfProtection);
+app.use(flash());
 
 app.use(express.static(path.join(rootDir, 'public')));
 // add user details/object under request

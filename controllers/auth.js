@@ -1,12 +1,12 @@
 const bcryptjs = require('bcryptjs');
 const User = require('../models/mongo/user');
 const demyConfig = require('../utils/config');
-const adminEmail = 'admin1@test.com';
 
 exports.getLogin = (req, res, next) => {
   res.render('auth/login', {
     path : '/login',
-    pageTitle: 'Login'
+    pageTitle: 'Login',
+    errorMessage: req.flash('error')
   });
 }
 
@@ -20,6 +20,7 @@ exports.postLogin = (req, res, next) => {
 
   userPromise.then(user => {
     if (!user) {
+      req.flash('error', 'Invalid credentials');
       return res.redirect('/login');
     }
     // compare password
@@ -36,7 +37,9 @@ exports.postLogin = (req, res, next) => {
           }
         });
       }
-      res.redirect('/login'); // password don't match
+      // password don't match
+      req.flash('error', 'Invalid credentials');
+      res.redirect('/login');
     }).catch(error => {
       console.log(error);
     });
@@ -48,7 +51,8 @@ exports.postLogin = (req, res, next) => {
 exports.getSignup = (req, res, next) => {
   res.render('auth/signup', {
     path : '/signup',
-    pageTitle: 'Sign Up'
+    pageTitle: 'Sign Up',
+    errorMessage: req.flash('error')
   });
 }
 
@@ -58,7 +62,12 @@ exports.postSignup = (req, res, next) => {
         password = req.body.password,
         confirmPassword = req.body.confirmPassword;
 
-  if (!name || !email || !password || !confirmPassword || password !== confirmPassword) {
+  if (!name || !email || !password || !confirmPassword) {
+    req.flash('error', 'Provide all details');
+    return res.redirect('/signup');
+  } 
+  if (password !== confirmPassword) {
+    req.flash('error', 'Confirm password don\'t match');
     return res.redirect('/signup');
   }
 
