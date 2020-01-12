@@ -89,17 +89,6 @@ if (demyConfig.useMongoDB) {
   mongoConnection().then(connection => {
     console.log('MongoDB connected');
     return User.findOne({ email: adminEmail });
-  }).then(user => {
-    if (user) {
-      return true; // user exists
-    }
-    // create new user
-    const newUser = new User({
-      name: 'Admin1',
-      email: adminEmail,
-      cart: { items: [] }
-    });
-    return newUser.save();
   }).then(() => {
     appServer.listen(port, () => {
       console.log(`Listening at http://localhost:${port}/`);
