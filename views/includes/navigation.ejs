@@ -27,6 +27,9 @@
         <li>
           <a href="/login" class="<%= path === '/login' ? 'active' : '' %>">Login</a>
         </li>
+        <li>
+          <a href="/signup" class="<%= path === '/signup' ? 'active' : '' %>">Sign up</a>
+        </li>
       <% } else { %>
         <li>
           <form action="/logout" method="POST">
