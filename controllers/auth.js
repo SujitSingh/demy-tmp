@@ -1,6 +1,7 @@
 const bcryptjs = require('bcryptjs');
 const User = require('../models/mongo/user');
 const demyConfig = require('../utils/config');
+const demyEmail = require('../utils/email');
 
 exports.getLogin = (req, res, next) => {
   let flashMessages = req.flash('error');
@@ -90,6 +91,15 @@ exports.postSignup = (req, res, next) => {
       });
       return newUser.save();
     }).then(createdUser => {
+      // send signup email to user
+      return demyEmail.sendEmail({
+        to: createdUser.email,
+        from: 'demy_email@mailinator.com',
+        subject: 'Demy signup success',
+        text: 'Thanks for signing.',
+        html: '<h2>You successfully signed to demy.</h2>'
+      });
+    }).then(emailSent => {
       res.redirect('/login');
     });
   }).catch(error => {
