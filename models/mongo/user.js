@@ -16,7 +16,9 @@ const userSchema = mongoose.Schema({
         quantity: { type: Number, require: true }
       }
     ]
-  }
+  },
+  resetToken: String,
+  resetTokenExpiration: Date
 });
 
 userSchema.methods.addToCart = function(product) {

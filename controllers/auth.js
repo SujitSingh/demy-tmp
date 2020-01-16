@@ -1,4 +1,5 @@
 const bcryptjs = require('bcryptjs');
+const crypto = require('crypto');
 const User = require('../models/mongo/user');
 const demyConfig = require('../utils/config');
 const demyEmail = require('../utils/email');
@@ -111,5 +112,117 @@ exports.postLogout = (req, res, next) => {
   req.session.destroy((error) => {
     console.log(error);
     res.redirect('/login');
+  });
+}
+
+exports.getForgotPassword = (req, res, next) => {
+  let flashMessages = req.flash('error');
+  flashMessages = flashMessages.length ? flashMessages : '';
+
+  res.render('auth/forgot-password.ejs', {
+    path : '/forgot-password',
+    pageTitle: 'Forgot Password?',
+    errorMessage: flashMessages
+  });
+}
+
+exports.postForgotPassword = (req, res, next) => {
+  let flashMessages = req.flash('error');
+  flashMessages = flashMessages.length ? flashMessages : '';
+
+  crypto.randomBytes(32, (error, buffer) => {
+    if (error) {
+      req.flash('error', 'Failed to generate reset token');
+      return res.redirect('/forgot-password');
+    }
+    const token = buffer.toString('hex'); // generate token
+    User.findOne({ email: req.body.email }).then(user => {
+      if (!user) {
+        req.flash('error', 'No user found with given email');
+        return res.redirect('/forgot-password');
+      }
+      // set token details and save user
+      user.resetToken = token;
+      user.resetTokenExpiration = Date.now() + (60 * 60 * 1000); // one hour
+      return user.save();
+    }).then(result => {
+      // send reset password email to user
+      return demyEmail.sendEmail({
+        to: req.body.email,
+        from: 'demy_email@mailinator.com',
+        subject: 'Demy password reset link',
+        text: 'Click the below password reset link',
+        html: `<a href="http://localhost:3300/reset-password/${token}">http://localhost:3300/reset-password/${token}</a>`
+      });
+    }).then(emailSent => {
+      res.redirect('/');
+    }).catch(error => {
+      console.log(error);
+    });
+  });
+}
+
+exports.getResetPassword = (req, res, next) => {
+  let flashMessages = req.flash('error');
+  flashMessages = flashMessages.length ? flashMessages : '';
+
+  const token = req.params.token;
+  if (!token) {
+    return res.redirect('/forgot-password');
+  }
+  // find the user having token
+  User.findOne({
+    resetToken: token,
+    resetTokenExpiration: { $gt: Date.now() } // token shouldn't have expired
+  }).then(user => {
+    if (!user) {
+      req.flash('error', 'Token does not match or has expired');
+      return res.redirect('/forgot-password');
+    }
+    res.render('auth/reset-password.ejs', {
+      path : '/reset-password',
+      pageTitle: 'Reset Password?',
+      errorMessage: flashMessages,
+      userId: user._id.toString(),
+      passwordToken: token
+    });
+  }).catch(error => {
+    console.log(error);
+  });
+}
+
+exports.postResetPassword = (req, res, next) => {
+  let newPassword = req.body.newPassword || '';
+  let confirmPassword = req.body.confirmPassword || '';
+  const passwordToken = req.body.passwordToken;
+  const userId = req.body.userId;
+
+  newPassword = newPassword.trim();
+  confirmPassword = confirmPassword.trim();
+
+  if (!newPassword || !confirmPassword || newPassword !== confirmPassword) {
+    req.flash('error', 'Both passwords don\'t match');
+    return res.redirect(`/reset-password/${passwordToken}`);
+  }
+  let userObj;
+  User.findOne({
+    _id: userId,
+    resetToken: passwordToken,
+    resetTokenExpiration: { $gt: Date.now() }
+  }).then(user => {
+    if (!user) {
+      req.flash('error', 'Failed in reset password authentication')
+    }
+    userObj = user;
+    return bcryptjs.hash(newPassword, 12); // hash the password
+  }).then(hashPassword => {
+    userObj.password = hashPassword;
+    userObj.resetToken = null;
+    userObj.resetTokenExpiration = undefined;
+    return userObj.save();
+  }).then(user => {
+    res.redirect('/login');
+  }).catch(error => {
+    console.log(error);
   });
 }
