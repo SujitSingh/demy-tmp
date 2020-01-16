@@ -92,6 +92,7 @@ exports.postSignup = (req, res, next) => {
       });
       return newUser.save();
     }).then(createdUser => {
+      res.redirect('/login'); // redirect to login page
       // send signup email to user
       return demyEmail.sendEmail({
         to: createdUser.email,
@@ -101,7 +102,7 @@ exports.postSignup = (req, res, next) => {
         html: '<h2>You successfully signed to demy.</h2>'
       });
     }).then(emailSent => {
-      res.redirect('/login');
+      console.log('Email sent successfully');
     });
   }).catch(error => {
     console.log(error);
@@ -146,6 +147,7 @@ exports.postForgotPassword = (req, res, next) => {
       user.resetTokenExpiration = Date.now() + (60 * 60 * 1000); // one hour
       return user.save();
     }).then(result => {
+      res.redirect('/login'); // redirect to home page
       // send reset password email to user
       return demyEmail.sendEmail({
         to: req.body.email,
@@ -155,7 +157,7 @@ exports.postForgotPassword = (req, res, next) => {
         html: `<a href="http://localhost:3300/reset-password/${token}">http://localhost:3300/reset-password/${token}</a>`
       });
     }).then(emailSent => {
-      res.redirect('/');
+      console.log('Email sent successfully');
     }).catch(error => {
       console.log(error);
     });
