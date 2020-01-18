@@ -12,19 +12,26 @@ exports.getLogin = (req, res, next) => {
   res.render('auth/login', {
     path : '/login',
     pageTitle: 'Login',
-    errorMessage: flashMessages
+    errorMessage: flashMessages,
+    oldInputs: { email: '' },
+    validationErrors: []
   });
 }
 
 exports.postLogin = (req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) { // validation error(s)
-    req.flash('error', errors.array()[0].msg);
-    return res.status(422).redirect('/login');
-  }
-
   const email = req.body.email,
         password = req.body.password;
+
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) { // validation error(s)
+    return res.status(422).render('auth/login', {
+      path : '/login',
+      pageTitle: 'Login',
+      errorMessage: errors.array()[0].msg,
+      oldInputs: { email },
+      validationErrors: errors.array()
+    });
+  }
 
   const userPromise = demyConfig.useMongoDB ? 
         User.findOne({ email: email }) : 
@@ -67,20 +74,27 @@ exports.getSignup = (req, res, next) => {
   res.render('auth/signup', {
     path : '/signup',
     pageTitle: 'Sign Up',
-    errorMessage: flashMessages
+    errorMessage: flashMessages,
+    oldInputs: { name: '', email: '' },
+    validationErrors: []
   });
 }
 
 exports.postSignup = (req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) { // validation error(s)
-    req.flash('error', errors.array()[0].msg);
-    return res.status(422).redirect('/signup');
-  }
-
   const name = req.body.name,
         email = req.body.email,
         password = req.body.password;
+
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) { // validation error(s)
+    return res.status(422).render('auth/signup', {
+      path : '/signup',
+      pageTitle: 'Sign Up',
+      errorMessage: errors.array()[0].msg,
+      oldInputs: { name, email },
+      validationErrors: errors.array()
+    });
+  }
 
   User.findOne({ email: email }).then(result => {
     if (result) {
@@ -211,6 +225,7 @@ exports.postResetPassword = (req, res, next) => {
     return res.redirect(`/reset-password/${passwordToken}`);
   }
   let userObj;
+  // find the user having "resetToken"
   User.findOne({
     _id: userId,
     resetToken: passwordToken,
