@@ -5,7 +5,16 @@ const router = express.Router();
 const authCtrl = require('../controllers/auth');
 
 router.get('/login', authCtrl.getLogin);
-router.post('/login', authCtrl.postLogin);
+router.post('/login',
+  [
+    body('email', 'Invalid email value')
+      .isEmail(),
+    body('password', 'Alpha numeric password atleast 5 characters long')
+      .isLength({ min: 5 })
+      .isAlphanumeric()
+  ],
+  authCtrl.postLogin
+);
 router.get('/signup', authCtrl.getSignup);
 router.post('/signup', 
   [
@@ -31,7 +40,8 @@ router.post('/signup',
         return true;
       })
   ],
-  authCtrl.postSignup);
+  authCtrl.postSignup
+);
 router.post('/logout', authCtrl.postLogout);
 router.get('/forgot-password', authCtrl.getForgotPassword);
 router.post('/forgot-password', authCtrl.postForgotPassword);
