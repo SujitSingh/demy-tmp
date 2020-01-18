@@ -1,19 +1,14 @@
-.add-product-form {
-  margin: 0 auto;
-  width: 80%;
+.input-form-wrap {
+  max-width: 300px;
+  margin: 20px auto;
 }
+
 .form-control {
   margin: 20px 0;
 }
 .form-control label { 
   display: inline-block;
   width: 100px; 
-}
-.form-control input,
-.form-control input, { }
-
-.add-product-form button {
-  cursor: pointer;
 }
 
 input, textarea {

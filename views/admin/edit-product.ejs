@@ -4,34 +4,39 @@
 <body>
   <%- include('../includes/navigation.ejs') %>
 
-  <form action="/admin/<% if (editing) { %>edit-product<% } else { %>add-product<% }%>" method="POST" class="add-product-form">
-    <div class="form-control">
-      <label for="title">Title:</label>
-      <input type="text" id="title" name="title" value="<% if (editing) { %><%=product.title%><% } %>">
-    </div>
-    <div class="form-control">
-      <label for="imgUrl">Image URL:</label>
-      <input type="text" id="imgUrl" name="imgUrl" value="<% if (editing) { %><%=product.imageUrl%><% } %>">
-    </div>
-    <div class="form-control">
-      <label for="description">Description:</label>
-      <textarea type="text" id="description" name="description"><% if (editing) { %><%=product.description%><% } %></textarea>
-    </div>
-    <div class="form-control">
-      <label for="price">Price:</label>
-      <input type="number" id="price" name="price" step="0.01" value="<% if (editing) { %><%=product.price%><% } %>">
-    </div>
-    <% if (editing) { %>
-      <input type="hidden" name="productId" value="<%= product._id || product.id %>">
+  <main class="input-form-wrap">
+    <% if (errorMessage) { %>
+      <p class="error-message"><%= errorMessage %></p>
     <% } %>
-    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-    <button type="submit" class="btn-action">
+    <form action="/admin/<% if (editing) { %>edit-product<% } else { %>add-product<% }%>" method="POST" class="add-product-form">
+      <div class="form-control">
+        <label for="title">Title:</label>
+        <input type="text" id="title" name="title" value="<% if (editing || hasError) { %><%=product.title%><% } %>">
+      </div>
+      <div class="form-control">
+        <label for="imgUrl">Image URL:</label>
+        <input type="text" id="imgUrl" name="imgUrl" value="<% if (editing || hasError) { %><%=product.imageUrl%><% } %>">
+      </div>
+      <div class="form-control">
+        <label for="description">Description:</label>
+        <textarea type="text" id="description" name="description"><% if (editing || hasError) { %><%=product.description%><% } %></textarea>
+      </div>
+      <div class="form-control">
+        <label for="price">Price:</label>
+        <input type="number" id="price" name="price" step="0.01" value="<% if (editing || hasError) { %><%=product.price%><% } %>">
+      </div>
       <% if (editing) { %>
-        Update Product
-      <% } else { %>
-        Add Product
+        <input type="hidden" name="productId" value="<%= product._id || product.id %>">
       <% } %>
-    </button>
-  </form>
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <button type="submit" class="btn-action">
+        <% if (editing) { %>
+          Update Product
+        <% } else { %>
+          Add Product
+        <% } %>
+      </button>
+    </form>
+  </main>
   
 <%- include('../includes/page-end.ejs') %>

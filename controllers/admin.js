@@ -1,4 +1,6 @@
 // @ts-check
+const { validationResult } = require('express-validator');
+
 const demyConfig = require('../utils/config');
 const Product = demyConfig.useMongoDB ? require('../models/mongo/product') : require('../models/product');
 
@@ -21,7 +23,10 @@ exports.getAddProduct = (req, res, next) => {
   res.render('admin/edit-product', {
     pageTitle: 'Add product', 
     path: '/admin/add-product',
-    editing: false
+    editing: false,
+    errorMessage: '',
+    hasError: false,
+    validationErrors: []
   });
 }
 
@@ -30,6 +35,20 @@ exports.postAddProduct = (req, res, next) => {
   const imageUrl = req.body.imgUrl;
   const description = req.body.description;
   const price = req.body.price;
+
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) { // validation results
+    return res.status(422).render('admin/edit-product', {
+      pageTitle: 'Add product', 
+      path: '/admin/add-product',
+      editing: false,
+      product: { title, imageUrl, description, price },
+      errorMessage: errors.array()[0].msg,
+      hasError: true,
+      validationErrors: errors.array()
+    });
+  }
+
   let productPromise;
   if (demyConfig.useMongoDB) {
     // using Mongoose
@@ -62,7 +81,10 @@ exports.getEditProduct = (req, res, next) => {
         pageTitle: 'Edit product', 
         path: '/admin/edit-product',
         product: product,
-        editing: true
+        editing: true,
+        errorMessage: '',
+        hasError: false,
+        validationErrors: []
       });
     } else {
       res.redirect('/admin/products');
@@ -75,10 +97,24 @@ exports.getEditProduct = (req, res, next) => {
 exports.postEditProduct = (req, res, next) => {
   const productId = req.body.productId;
   const title = req.body.title;
-  const imgUrl = req.body.imgUrl;
+  const imageUrl = req.body.imgUrl;
   const description = req.body.description;
   const price = req.body.price;
   const userId = req.user._id;
+
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) { // validation results
+    return res.status(422).render('admin/edit-product', {
+      pageTitle: 'Add product', 
+      path: '/admin/add-product',
+      editing: true,
+      product: { title, imageUrl, description, price },
+      errorMessage: errors.array()[0].msg,
+      hasError: true,
+      validationErrors: errors.array()
+    });
+  }
+
   // check existing Product
   let getProductPromise = demyConfig.useMongoDB ? Product.findOne({ _id: productId, userId: userId }) : Product.findByPk(productId);
 
@@ -91,13 +127,13 @@ exports.postEditProduct = (req, res, next) => {
       // Mongoose
       product.title = title;
       product.price = price;
-      product.imageUrl = imgUrl;
+      product.imageUrl = imageUrl;
       product.description = description;
       return product.save();
     } else {
       // Sequelize
       product.title = title;
-      product.imageUrl = imgUrl;
+      product.imageUrl = imageUrl;
       product.price = price;
       product.description = description;
       return product.save();
