@@ -12,19 +12,25 @@
     <form class="signup-form" action="/signup" method="POST">
       <div class="form-control">
         <label for="name">Name:</label>
-        <input type="text" id="name" name="name" value="<%= oldInputs.name %>">
+        <input type="text" id="name" name="name"
+          class="<%= validationErrors.find(val => val.param === 'name') ? 'invalid': '' %>"
+          value="<%= oldInputs.name %>">
       </div>
       <div class="form-control">
         <label for="email">Email:</label>
-        <input type="text" id="email" name="email" value="<%= oldInputs.email %>">
+        <input type="text" id="email" name="email"
+          class="<%= validationErrors.find(val => val.param === 'email') ? 'invalid': '' %>"
+          value="<%= oldInputs.email %>">
       </div>
       <div class="form-control">
         <label for="password">Password:</label>
-        <input type="password" id="password" name="password">
+        <input type="password" id="password" name="password"
+          class="<%= validationErrors.find(val => val.param === 'password') ? 'invalid': '' %>">
       </div>
       <div class="form-control">
         <label for="confirmPassword">Confirm Password:</label>
-        <input type="password" id="confirmPassword" name="confirmPassword">
+        <input type="password" id="confirmPassword" name="confirmPassword"
+          class="<%= validationErrors.find(val => val.param === 'confirmPassword') ? 'invalid': '' %>">
       </div>
       <input type="hidden" name="_csrf" value="<%= csrfToken %>">
       <button type="submit" class="btn-action">Sign up</button>
