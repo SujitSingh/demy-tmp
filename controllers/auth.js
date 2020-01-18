@@ -1,5 +1,6 @@
 const bcryptjs = require('bcryptjs');
 const crypto = require('crypto');
+const { validationResult } = require('express-validator');
 const User = require('../models/mongo/user');
 const demyConfig = require('../utils/config');
 const demyEmail = require('../utils/email');
@@ -65,32 +66,32 @@ exports.getSignup = (req, res, next) => {
 }
 
 exports.postSignup = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).render('auth/signup', {
+      path : '/signup',
+      pageTitle: 'Sign Up',
+      errorMessage: errors.array()[0].msg
+    });
+  }
+
   const name = req.body.name,
         email = req.body.email,
-        password = req.body.password,
-        confirmPassword = req.body.confirmPassword;
-
-  if (!name || !email || !password || !confirmPassword) {
-    req.flash('error', 'Provide all details');
-    return res.redirect('/signup');
-  } 
-  if (password !== confirmPassword) {
-    req.flash('error', 'Confirm password don\'t match');
-    return res.redirect('/signup');
-  }
+        password = req.body.password;
 
   User.findOne({ email: email }).then(result => {
     if (result) {
       req.flash('error', 'This email already exists');
       return res.redirect('/signup'); // user already exists
     }
+    // encrypt password
     return bcryptjs.hash(password, 12).then(hashPassword => {
       const newUser = new User({
         name, email,
         password: hashPassword,
         cart: { items: [] }
       });
-      return newUser.save();
+      return newUser.save(); // save new user
     }).then(createdUser => {
       res.redirect('/login'); // redirect to login page
       // send signup email to user
