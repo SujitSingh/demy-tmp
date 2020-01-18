@@ -32,7 +32,7 @@ exports.getAddProduct = (req, res, next) => {
 
 exports.postAddProduct = (req, res, next) => {
   const title = req.body.title;
-  const imageUrl = req.body.imgUrl;
+  const imageUrl = req.body.imageUrl;
   const description = req.body.description;
   const price = req.body.price;
 
@@ -97,7 +97,7 @@ exports.getEditProduct = (req, res, next) => {
 exports.postEditProduct = (req, res, next) => {
   const productId = req.body.productId;
   const title = req.body.title;
-  const imageUrl = req.body.imgUrl;
+  const imageUrl = req.body.imageUrl;
   const description = req.body.description;
   const price = req.body.price;
   const userId = req.user._id;
@@ -108,7 +108,10 @@ exports.postEditProduct = (req, res, next) => {
       pageTitle: 'Add product', 
       path: '/admin/add-product',
       editing: true,
-      product: { title, imageUrl, description, price },
+      product: {
+        _id: productId, 
+        title, imageUrl, description, price
+      },
       errorMessage: errors.array()[0].msg,
       hasError: true,
       validationErrors: errors.array()
