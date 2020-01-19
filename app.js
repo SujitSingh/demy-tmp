@@ -74,10 +74,13 @@ app.use((req, res, next) => {
                       User.findById(req.session.user._id) : 
                       User.findOne({ where: { email: adminEmail }});
   userPromise.then(user => {
+    if (!user) {
+      return next();
+    }
     req.user = user && demyConfig.useMongoDB ? user : user;
     next();
   }).catch(error => {
-    console.log(error);
+    throw new Error(error);
   });
 });
 // common values for template views
@@ -91,8 +94,9 @@ app.use((req, res, next) => {
 app.use('/admin', checkAuth.isLoggedIn, adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);
-// 404 route
-app.use(errorCtrl.notFound);
+// error handlers
+app.use(errorCtrl.notFound); // 404 route
+app.use(errorCtrl.serverError); // server error handler
 
 const appServer = http.createServer(app);
 

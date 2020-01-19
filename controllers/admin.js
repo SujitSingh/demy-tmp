@@ -15,7 +15,7 @@ exports.getProducts = (req, res, next) => {
       prods: products
     });
   }).catch(error => {
-    console.log(error);
+    return next(new Error(error));
   });
 }
 
@@ -64,7 +64,7 @@ exports.postAddProduct = (req, res, next) => {
   productPromise.then(result => {
     res.redirect('/admin/products');
   }).catch(error => {
-    console.log(error);
+    return next(new Error(error));
   });
 }
 
@@ -90,7 +90,7 @@ exports.getEditProduct = (req, res, next) => {
       res.redirect('/admin/products');
     }
   }).catch(error => {
-    console.log(error);
+    return next(new Error(error));
   });
 }
 
@@ -144,7 +144,7 @@ exports.postEditProduct = (req, res, next) => {
   }).then((result) => {
     res.redirect('/admin/products');
   }).catch(error => {
-    console.log(error);
+    return next(new Error(error));
   });
 }
 
@@ -164,7 +164,7 @@ exports.postDeleteProduct = (req, res, next) => {
     productPromise.then((result) => {
       res.redirect('/admin/products');
     }).catch(error => {
-      console.log(error);
+      return next(new Error(error));
     });
   }
 }

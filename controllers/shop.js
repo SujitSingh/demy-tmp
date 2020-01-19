@@ -12,7 +12,7 @@ exports.getIndex = (req, res, next) => {
       prods: products
     });
   }).catch(error => {
-    console.log(error);
+    return next(new Error(error));
   });
 }
 
@@ -26,7 +26,7 @@ exports.getProducts = (req, res, next) => {
       prods: products
     });
   }).catch(error => {
-    console.log(error);
+    return next(new Error(error));
   });
 }
 
@@ -41,7 +41,7 @@ exports.getProduct = (req, res, next) => {
       path: '/products'
     });
   }).catch(error => {
-    console.log(error);
+    return next(new Error(error));
   });
 }
 
@@ -58,7 +58,7 @@ exports.getCart = (req, res, next) => {
       products: products
     });
   }).catch(error => {
-    console.log(error);
+    return next(new Error(error));
   });
 }
 
@@ -78,7 +78,7 @@ exports.postCartDeleteProduct = (req, res, next) => {
   cartPromise.then(() => {
     res.redirect('/cart');
   }).catch(error => {
-    console.log(error);
+    return next(new Error(error));
   });
 }
 
@@ -91,7 +91,7 @@ exports.addToCart = (req, res, next) => {
     }).then(result => {
       res.redirect('/cart');
     }).catch(error => {
-      console.log(error);
+      return next(new Error(error));
     });
   } else {
     // Sequelize
@@ -116,7 +116,7 @@ exports.addToCart = (req, res, next) => {
     }).then(() => {
       res.redirect('/cart');
     }).catch(error => {
-      console.log(error);
+      return next(new Error(error));
     });
   }
 }
@@ -130,7 +130,7 @@ exports.getOrders = (req, res, next) => {
       orders
     });
   }).catch(error => {
-    console.log(error);
+    return next(new Error(error));
   });
 }
 
@@ -165,6 +165,6 @@ exports.postOrders = (req, res, next) => {
   orderPromise.then(() => {
     res.redirect('/orders');
   }).catch(error => {
-    console.log(error);
+    return next(new Error(error));
   });
 }

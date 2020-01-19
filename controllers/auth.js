@@ -60,10 +60,10 @@ exports.postLogin = (req, res, next) => {
       req.flash('error', 'Invalid credentials');
       res.redirect('/login');
     }).catch(error => {
-      console.log(error);
+      return next(new Error(error));
     });
   }).catch(error => {
-    console.log(error);
+    return next(new Error(error));
   });
 }
 
@@ -123,13 +123,13 @@ exports.postSignup = (req, res, next) => {
       console.log('Email sent successfully');
     });
   }).catch(error => {
-    console.log(error);
+    return next(new Error(error));
   });
 }
 
 exports.postLogout = (req, res, next) => {
   req.session.destroy((error) => {
-    console.log(error);
+    if (error) console.log(error);
     res.redirect('/login');
   });
 }
@@ -177,7 +177,7 @@ exports.postForgotPassword = (req, res, next) => {
     }).then(emailSent => {
       console.log('Email sent successfully');
     }).catch(error => {
-      console.log(error);
+      return next(new Error(error));
     });
   });
 }
@@ -207,7 +207,7 @@ exports.getResetPassword = (req, res, next) => {
       passwordToken: token
     });
   }).catch(error => {
-    console.log(error);
+    return next(new Error(error));
   });
 }
 
@@ -244,6 +244,6 @@ exports.postResetPassword = (req, res, next) => {
   }).then(user => {
     res.redirect('/login');
   }).catch(error => {
-    console.log(error);
+    return next(new Error(error));
   });
 }

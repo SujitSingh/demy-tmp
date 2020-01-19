@@ -1,0 +1,16 @@
+<%- include('includes/page-start.ejs') %>
+</head>
+
+<body>
+  <%- include('includes/navigation.ejs') %>
+  
+  <main class="content-area">
+    <h2>Some error occurred</h2>
+    <p>
+      <strong>Error details -</strong>
+      <p><strong>Message -</strong> <%= error.message %> </p>
+      <p><strong>Stack -</strong> <%= error.stack %> </p>
+    </p>
+  </main>
+
+<%- include('includes/page-end.ejs') %>
