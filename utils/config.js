@@ -8,7 +8,8 @@ const demyConfig = {
     user: '<username>',
     pass: '<password>'
   },
-  productImgsRoot: 'public/imgs'
+  productImgsRoot: 'public/imgs',
+  invoiceFilesRoot: 'data/invoice'
 };
 
 module.exports = demyConfig;

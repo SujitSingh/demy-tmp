@@ -1,4 +1,7 @@
 // @ts-check
+const fs = require('fs');
+const path = require('path');
+
 const demyConfig = require('../utils/config');
 const Product = demyConfig.useMongoDB ? require('../models/mongo/product') : require('../models/product');
 
@@ -167,4 +170,25 @@ exports.postOrders = (req, res, next) => {
   }).catch(error => {
     return next(new Error(error));
   });
+}
+
+exports.getInvoiceFile = (req, res, next) => {
+  const orderId = req.params.orderId;
+  if (!orderId) {
+    return res.redirect('/orders');
+  }
+  const invoiceName = `invoice-${orderId}.pdf`; // file name
+  const invoicePath = path.join(demyConfig.invoiceFilesRoot, invoiceName); // invoice path
+
+  // read file
+  fs.readFile(invoicePath, (error, fileData) => {
+    if (error) {
+      return next(error);
+    }
+    // set proper response headers
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `inline; filename="${invoiceName}"`);
+    // res.setHeader('Content-Length', fileData.length.toString());
+    res.send(fileData); // send file buffer
+  })
 }

@@ -12,5 +12,6 @@ router.post('/cart-delete-item', checkAuth.isLoggedIn, shopCtrl.postCartDeletePr
 router.post('/cart', checkAuth.isLoggedIn, shopCtrl.addToCart);
 router.get('/orders', checkAuth.isLoggedIn, shopCtrl.getOrders);
 router.post('/create-order', checkAuth.isLoggedIn, shopCtrl.postOrders);
+router.get('/order/:orderId', checkAuth.isLoggedIn, shopCtrl.getInvoiceFile);
 
 module.exports = router;

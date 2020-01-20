@@ -24,6 +24,9 @@
                     <h5 class="product-price">$<%= product.price || product.product.price %></h5>
                     <p class="product-description"><%= product.description || product.product.description %></p>
                   </div>
+                  <div class="card-footer">
+                    <a href="/order/<%= order._id || order.id %>" class="btn-action">Download Invoice</a>
+                  </div>
                 </article>
               <% } %>
             </div>
