@@ -50,7 +50,7 @@ exports.postAddProduct = (req, res, next) => {
     });
   }
 
-  const imageUrl = image.path; // image path
+  const imageUrl = `/${image.path}`; // image path
   let productPromise;
   if (demyConfig.useMongoDB) {
     // using Mongoose

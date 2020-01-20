@@ -64,7 +64,7 @@ app.use(session({
 // multer file storage
 const multerFileStorage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, './public/imgs');
+    cb(null, demyConfig.productImgsRoot);
   },
   filename: (req, file, cb) => {
     cb(null, new Date().getTime() + '-' + file.originalname);
@@ -81,8 +81,10 @@ const multerFileFilter = (req, file, cb) => {
 app.use(multer({ storage: multerFileStorage, fileFilter: multerFileFilter }).single('image'));
 app.use(csurf({ }));
 app.use(flash());
-
+// public folders
 app.use(express.static(path.join(rootDir, 'public')));
+app.use(`/${demyConfig.productImgsRoot}`, express.static(path.join(rootDir, demyConfig.productImgsRoot)));
+
 // add user details/object under request
 app.use((req, res, next) => {
   if (!req.session.user) {

@@ -7,7 +7,8 @@ const demyConfig = {
     port: 2525,
     user: '<username>',
     pass: '<password>'
-  }
+  },
+  productImgsRoot: 'public/imgs'
 };
 
 module.exports = demyConfig;
