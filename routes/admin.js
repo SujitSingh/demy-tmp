@@ -13,9 +13,6 @@ router.post('/add-product',
       .trim()
       .isLength({ min: 5 })
       .isString(),
-    body('imageUrl', 'Invalid image URL')
-      .trim()
-      .isLength({ min: 3 }),
     body('price', 'Invalid price value')
       .trim()
       .isFloat(),
@@ -35,9 +32,6 @@ router.post('/edit-product',
       .trim()
       .isLength({ min: 5 })
       .isString(),
-    body('imageUrl', 'Invalid image URL')
-      .trim()
-      .isLength({ min: 3 }),
     body('price', 'Invalid price value')
       .trim()
       .isFloat(),

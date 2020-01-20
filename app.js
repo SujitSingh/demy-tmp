@@ -4,6 +4,7 @@ const rootDir = require('./utils/paths');
 const http = require('http');
 const express = require('express');
 const session = require('express-session');
+const multer = require('multer');
 const csurf = require('csurf');
 const flash = require('connect-flash');
 const MongoDBStrore = require('connect-mongodb-session')(session);
@@ -25,7 +26,6 @@ const sessionStore = new MongoDBStrore(
     }
   }
 );
-const csrfProtection = csurf({ });
 
 let Product, User, Cart, CartItem, Order, OrderItem;
 if (demyConfig.useMongoDB) {
@@ -61,7 +61,25 @@ app.use(session({
   saveUninitialized: false,
   store: sessionStore
 }));
-app.use(csrfProtection);
+// multer file storage
+const multerFileStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, './public/imgs');
+  },
+  filename: (req, file, cb) => {
+    cb(null, new Date().getTime() + '-' + file.originalname);
+  }
+});
+const multerFileFilter = (req, file, cb) => {
+  // multer file type filter
+  if (file.mimetype === 'image/png' || file.mimetype === 'image/jpg' || file.mimetype === 'image/jpeg') {
+    cb(null, true); // save file
+  } else {
+    cb(null, false); // don't save file
+  }
+};
+app.use(multer({ storage: multerFileStorage, fileFilter: multerFileFilter }).single('image'));
+app.use(csurf({ }));
 app.use(flash());
 
 app.use(express.static(path.join(rootDir, 'public')));

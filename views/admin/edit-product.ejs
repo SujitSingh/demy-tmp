@@ -8,7 +8,8 @@
     <% if (errorMessage) { %>
       <p class="error-message"><%= errorMessage %></p>
     <% } %>
-    <form action="/admin/<% if (editing) { %>edit-product<% } else { %>add-product<% }%>" method="POST" class="add-product-form">
+    <form action="/admin/<% if (editing) { %>edit-product<% } else { %>add-product<% }%>?_csrf=<%=csrfToken%>" 
+      method="POST" enctype="multipart/form-data" class="add-product-form">
       <div class="form-control">
         <label for="title">Title:</label>
         <input type="text" id="title" name="title"
@@ -16,10 +17,8 @@
           value="<% if (editing || hasError) { %><%=product.title%><% } %>">
       </div>
       <div class="form-control">
-        <label for="imageUrl">Image URL:</label>
-        <input type="text" id="imageUrl" name="imageUrl"
-          class="<%= validationErrors.find(val => val.param === 'imageUrl') ? 'invalid': '' %>"
-          value="<% if (editing || hasError) { %><%=product.imageUrl%><% } %>">
+        <label for="image">Image URL:</label>
+        <input type="file" id="image" name="image">
       </div>
       <div class="form-control">
         <label for="description">Description:</label>

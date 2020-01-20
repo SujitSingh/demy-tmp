@@ -32,23 +32,25 @@ exports.getAddProduct = (req, res, next) => {
 
 exports.postAddProduct = (req, res, next) => {
   const title = req.body.title;
-  const imageUrl = req.body.imageUrl;
+  const image = req.file;
   const description = req.body.description;
   const price = req.body.price;
 
   const errors = validationResult(req);
-  if (!errors.isEmpty()) { // validation results
+  if (!errors.isEmpty() || !image) {
+    // validation error or image upload error
     return res.status(422).render('admin/edit-product', {
       pageTitle: 'Add product', 
       path: '/admin/add-product',
       editing: false,
-      product: { title, imageUrl, description, price },
-      errorMessage: errors.array()[0].msg,
+      product: { title, description, price },
+      errorMessage: errors.isEmpty() ? 'Attached file not saved' : errors.array()[0].msg,
       hasError: true,
-      validationErrors: errors.array()
+      validationErrors: errors.isEmpty() ? [] : errors.array()
     });
   }
 
+  const imageUrl = image.path; // image path
   let productPromise;
   if (demyConfig.useMongoDB) {
     // using Mongoose
@@ -97,20 +99,21 @@ exports.getEditProduct = (req, res, next) => {
 exports.postEditProduct = (req, res, next) => {
   const productId = req.body.productId;
   const title = req.body.title;
-  const imageUrl = req.body.imageUrl;
+  const image = req.file;
   const description = req.body.description;
   const price = req.body.price;
   const userId = req.user._id;
 
   const errors = validationResult(req);
-  if (!errors.isEmpty()) { // validation results
+  if (!errors.isEmpty()) {
+    // validation error or image upload failure
     return res.status(422).render('admin/edit-product', {
       pageTitle: 'Add product', 
       path: '/admin/add-product',
       editing: true,
       product: {
         _id: productId, 
-        title, imageUrl, description, price
+        title, description, price
       },
       errorMessage: errors.array()[0].msg,
       hasError: true,
@@ -130,13 +133,17 @@ exports.postEditProduct = (req, res, next) => {
       // Mongoose
       product.title = title;
       product.price = price;
-      product.imageUrl = imageUrl;
+      if (image) { // new image provided
+        product.imageUrl = image.path;
+      }
       product.description = description;
       return product.save();
     } else {
       // Sequelize
       product.title = title;
-      product.imageUrl = imageUrl;
+      if (image) { // new image provided
+        product.imageUrl = image.path;
+      }
       product.price = price;
       product.description = description;
       return product.save();
