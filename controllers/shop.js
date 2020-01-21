@@ -4,6 +4,7 @@ const path = require('path');
 
 const demyConfig = require('../utils/config');
 const Product = demyConfig.useMongoDB ? require('../models/mongo/product') : require('../models/product');
+const Order = demyConfig.useMongoDB ? require('../models/mongo/order') : require('../models/order');
 
 exports.getIndex = (req, res, next) => {
   const productsPromise = demyConfig.useMongoDB ? Product.find() : Product.findAll();
@@ -177,18 +178,31 @@ exports.getInvoiceFile = (req, res, next) => {
   if (!orderId) {
     return res.redirect('/orders');
   }
-  const invoiceName = `invoice-${orderId}.pdf`; // file name
-  const invoicePath = path.join(demyConfig.invoiceFilesRoot, invoiceName); // invoice path
-
-  // read file
-  fs.readFile(invoicePath, (error, fileData) => {
-    if (error) {
-      return next(error);
+  // find the order
+  Order.findById(orderId).then(order => {
+    if (!order) {
+      return next(new Error('Invalid order invoice request'));
     }
-    // set proper response headers
-    res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', `inline; filename="${invoiceName}"`);
-    // res.setHeader('Content-Length', fileData.length.toString());
-    res.send(fileData); // send file buffer
-  })
+    // check user's authenticity
+    if (order.user.userId.toString() === req.user._id.toString()) {
+      const invoiceName = `invoice-${orderId}.pdf`; // file name
+      const invoicePath = path.join(demyConfig.invoiceFilesRoot, invoiceName); // invoice path
+  
+      // read file
+      fs.readFile(invoicePath, (error, fileData) => {
+        if (error) {
+          return next(error);
+        }
+        // set proper response headers
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', `inline; filename="${invoiceName}"`);
+        // res.setHeader('Content-Length', fileData.length.toString());
+        res.send(fileData); // send file buffer
+      })
+    } else {
+      next(new Error('Invalid user access'));
+    }
+  }).catch(error => {
+    next(new Error(error));
+  });
 }
