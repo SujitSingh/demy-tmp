@@ -188,17 +188,22 @@ exports.getInvoiceFile = (req, res, next) => {
       const invoiceName = `invoice-${orderId}.pdf`; // file name
       const invoicePath = path.join(demyConfig.invoiceFilesRoot, invoiceName); // invoice path
   
-      // read file
-      fs.readFile(invoicePath, (error, fileData) => {
-        if (error) {
-          return next(error);
-        }
-        // set proper response headers
-        res.setHeader('Content-Type', 'application/pdf');
-        res.setHeader('Content-Disposition', `inline; filename="${invoiceName}"`);
-        // res.setHeader('Content-Length', fileData.length.toString());
-        res.send(fileData); // send file buffer
-      })
+      // response headers
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', `inline; filename="${invoiceName}"`);
+
+      // send file stream
+      const file = fs.createReadStream(invoicePath); // read stream
+      return file.pipe(res); // send file stream
+
+      // read file data
+      // fs.readFile(invoicePath, (error, fileData) => {
+      //   if (error) {
+      //     return next(error);
+      //   }
+      //   // res.setHeader('Content-Length', fileData.length.toString());
+      //   return res.send(fileData); // send file data buffer
+      // });
     } else {
       next(new Error('Invalid user access'));
     }
