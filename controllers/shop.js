@@ -1,6 +1,7 @@
 // @ts-check
 const fs = require('fs');
 const path = require('path');
+const PDFDocument = require('pdfkit');
 
 const demyConfig = require('../utils/config');
 const Product = demyConfig.useMongoDB ? require('../models/mongo/product') : require('../models/product');
@@ -192,11 +193,31 @@ exports.getInvoiceFile = (req, res, next) => {
       res.setHeader('Content-Type', 'application/pdf');
       res.setHeader('Content-Disposition', `inline; filename="${invoiceName}"`);
 
-      // send file stream
-      const file = fs.createReadStream(invoicePath); // read stream
-      return file.pipe(res); // send file stream
+      // generate PDF file
+      const pdfDoc = new PDFDocument();
+      pdfDoc.pipe(fs.createWriteStream(invoicePath)); // location for output PDF file
+      pdfDoc.pipe(res); // Response - send file as stream
+      // add contents of PDF file
+      pdfDoc.fontSize(20).text('Order Invoice', {
+        underline: true,
+        align: 'center',
+      });
+      pdfDoc.fontSize(14).text('Invoice details', { underline: true });
+      let totalPrice = 0;
+      // add product details
+      order.products.forEach(prod => {
+        totalPrice += prod.quantity * prod.product.price;
+        pdfDoc.text(`${prod.product.title}(Rs${prod.product.price}), Quantity - ${prod.quantity} = Rs${prod.quantity * prod.product.price}`);
+      });
+      pdfDoc.text('--------------------------------------------------');
+      pdfDoc.text('Total price - Rs' + totalPrice);
+      pdfDoc.end(); // editing complete
 
-      // read file data
+      // send as file stream
+      // const fileStream = fs.createReadStream(invoicePath); // read stream
+      // return fileStream.pipe(res); // send file stream
+
+      // send as file data
       // fs.readFile(invoicePath, (error, fileData) => {
       //   if (error) {
       //     return next(error);

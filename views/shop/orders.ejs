@@ -7,7 +7,10 @@
     <% if (orders && orders.length) { %>
       <div class="orders">
         <% orders.forEach(order => { %>
-          <p>Order ID - <%= order._id || order.id %></p>
+          <p>
+            Order ID - <%= order._id || order.id %>
+            <a href="/order/<%= order._id || order.id %>" class="btn-action" target="_blank">Download Invoice</a>
+          </p>
           <% if ((order.products && order.products.length) || (order.Products && order.Products.length)) { %>
             <div class="products">
               <% for(let product of order.products || order.Products) { %>
@@ -23,9 +26,6 @@
                   <div class="card-content">
                     <h5 class="product-price">$<%= product.price || product.product.price %></h5>
                     <p class="product-description"><%= product.description || product.product.description %></p>
-                  </div>
-                  <div class="card-footer">
-                    <a href="/order/<%= order._id || order.id %>" class="btn-action" target="_blank">Download Invoice</a>
                   </div>
                 </article>
               <% } %>
