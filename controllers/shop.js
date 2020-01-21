@@ -3,6 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const PDFDocument = require('pdfkit');
 
+const filesUtil = require('../utils/files');
 const demyConfig = require('../utils/config');
 const Product = demyConfig.useMongoDB ? require('../models/mongo/product') : require('../models/product');
 const Order = demyConfig.useMongoDB ? require('../models/mongo/order') : require('../models/order');
@@ -195,7 +196,8 @@ exports.getInvoiceFile = (req, res, next) => {
 
       // generate PDF file
       const pdfDoc = new PDFDocument();
-      pdfDoc.pipe(fs.createWriteStream(invoicePath)); // location for output PDF file
+      const fileWriteStream = fs.createWriteStream(invoicePath)
+      pdfDoc.pipe(fileWriteStream); // location for output PDF file
       pdfDoc.pipe(res); // Response - send file as stream
       // add contents of PDF file
       pdfDoc.fontSize(20).text('Order Invoice', {
@@ -212,6 +214,9 @@ exports.getInvoiceFile = (req, res, next) => {
       pdfDoc.text('--------------------------------------------------');
       pdfDoc.text('Total price - Rs' + totalPrice);
       pdfDoc.end(); // editing complete
+      fileWriteStream.on('finish', () => {
+        filesUtil.deleteFile(invoicePath); // delete file when done
+      });
 
       // send as file stream
       // const fileStream = fs.createReadStream(invoicePath); // read stream

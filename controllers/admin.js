@@ -1,6 +1,7 @@
 // @ts-check
 const { validationResult } = require('express-validator');
 
+const filesUtil = require('../utils/files');
 const demyConfig = require('../utils/config');
 const Product = demyConfig.useMongoDB ? require('../models/mongo/product') : require('../models/product');
 
@@ -134,7 +135,8 @@ exports.postEditProduct = (req, res, next) => {
       product.title = title;
       product.price = price;
       if (image) { // new image provided
-        product.imageUrl = image.path;
+        filesUtil.deleteFile(product.imageUrl); // delete previous image
+        product.imageUrl = `/${image.path}`; // new image path
       }
       product.description = description;
       return product.save();
@@ -142,7 +144,8 @@ exports.postEditProduct = (req, res, next) => {
       // Sequelize
       product.title = title;
       if (image) { // new image provided
-        product.imageUrl = image.path;
+        filesUtil.deleteFile(product.imageUrl); // delete previous image
+        product.imageUrl = `/${image.path}`; // new image path
       }
       product.price = price;
       product.description = description;
@@ -161,9 +164,17 @@ exports.postDeleteProduct = (req, res, next) => {
   if (productId) {
     let productPromise;
     if (demyConfig.useMongoDB) {
-      productPromise = Product.findOneAndRemove({ _id: productId, userId: userId });
+      productPromise = Product.findById(productId).then(product => {
+        if (!product) {
+          return new Error('Invalid product');
+        }
+        filesUtil.deleteFile(product.imageUrl); // delete product image
+        // delete the product
+        return Product.findOneAndRemove({ _id: productId, userId: userId });
+      });
     } else {
       productPromise = Product.findOne({ where: { id: productId, UserId: req.user.id}}).then(product => {
+        filesUtil.deleteFile(product.imageUrl); // delete product image
         return product.destroy(); // delete product
       });
     }
