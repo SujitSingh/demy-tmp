@@ -40,3 +40,23 @@
   margin: 10px 0;
   text-align: center;
 }
+
+/* pagination link styles */
+.pagination-group {
+  margin: 10px auto;
+  max-width: 100px;
+  text-align: center;
+}
+.pagination-group .pagination-link {
+  text-decoration: none;
+  padding: 2px 5px;
+  margin: 0 5px;
+  border-radius: 2px;
+  color: #40407a;
+  border: 1px solid #40407a;
+}
+.pagination-group .pagination-link:hover,
+.pagination-group .pagination-link.active {
+  color: #fff;
+  background-color: #40407a;
+}
