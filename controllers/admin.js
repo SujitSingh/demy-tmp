@@ -5,19 +5,41 @@ const filesUtil = require('../utils/files');
 const demyConfig = require('../utils/config');
 const Product = demyConfig.useMongoDB ? require('../models/mongo/product') : require('../models/product');
 
-exports.getProducts = (req, res, next) => {
-  const userId = req.user._id;
-  const productPromise = demyConfig.useMongoDB ? Product.find({ userId: userId }) : req.user.getProducts();
+const ITEMS_PER_PAGE = 2;
 
-  productPromise.then(products => {
-    res.render('admin/products', {
-      pageTitle: 'Admin Products',
-      path: '/admin/products',
-      prods: products
+exports.getProducts = (req, res, next) => {
+  const pageIndex = req.query.page ? parseInt(req.query.page) || 1 : 1,
+        userId = req.user._id;
+  let totalItems = 0;
+
+  if (demyConfig.useMongoDB) {
+    Product.find({ userId: userId }).count().then(productsCount => {
+      totalItems = productsCount;
+      return Product.find({ userId: userId }).skip((pageIndex - 1) * ITEMS_PER_PAGE).limit(ITEMS_PER_PAGE);
+    }).then(products => {
+      res.render('admin/products', {
+        pageTitle: 'Admin Products',
+        path: '/admin/products',
+        prods: products,
+        currentPageIndex: pageIndex,
+        totalPages: Math.ceil(totalItems / ITEMS_PER_PAGE),
+        totalItems: totalItems
+      });
+    }).catch(error => {
+      return next(new Error(error));
     });
-  }).catch(error => {
-    return next(new Error(error));
-  });
+  } else {
+    // seuelize approach
+    req.user.getProducts().then(products => {
+      res.render('admin/products', {
+        pageTitle: 'Admin Products',
+        path: '/admin/products',
+        prods: products
+      });
+    }).catch(error => {
+      return next(new Error(error));
+    });
+  }
 }
 
 exports.getAddProduct = (req, res, next) => {

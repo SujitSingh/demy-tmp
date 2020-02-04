@@ -15,8 +15,8 @@ exports.getIndex = (req, res, next) => {
   let totalItems = 0;
 
   if (demyConfig.useMongoDB) {
-    Product.find().count().then(productCounts => {
-      totalItems = productCounts;
+    Product.find().count().then(productsCount => {
+      totalItems = productsCount;
       return Product.find().skip((pageIndex - 1) * ITEMS_PER_PAGE).limit(ITEMS_PER_PAGE);
     }).then(products => {
       res.render('shop/index', {
@@ -45,17 +45,37 @@ exports.getIndex = (req, res, next) => {
 }
 
 exports.getProducts = (req, res, next) => {
-  const productsPromise = demyConfig.useMongoDB ? Product.find() : Product.findAll();
+  const pageIndex = req.query.page ? parseInt(req.query.page) || 1 : 1;
+  let totalItems = 0;
 
-  productsPromise.then(products => {
-    res.render('shop/product-list', {
-      pageTitle: 'All products',
-      path: '/products',
-      prods: products
+  if (demyConfig.useMongoDB) {
+    Product.find().count().then(productsCount => {
+      totalItems = productsCount;
+      return Product.find().skip((pageIndex - 1) * ITEMS_PER_PAGE).limit(ITEMS_PER_PAGE);
+    }).then(products => {
+      res.render('shop/product-list', {
+        pageTitle: 'All products',
+        path: '/products',
+        prods: products,
+        currentPageIndex: pageIndex,
+        totalPages: Math.ceil(totalItems / ITEMS_PER_PAGE),
+        totalItems: totalItems
+      });
+    }).catch(error => {
+      return next(new Error(error));
     });
-  }).catch(error => {
-    return next(new Error(error));
-  });
+  } else {
+    // sequelize approach
+    Product.findAll().then(products => {
+      res.render('shop/product-list', {
+        pageTitle: 'All products',
+        path: '/products',
+        prods: products
+      });
+    }).catch(error => {
+      return next(new Error(error));
+    });
+  }
 }
 
 exports.getProduct = (req, res, next) => {
