@@ -15,7 +15,7 @@ exports.getIndex = (req, res, next) => {
   let totalItems = 0;
 
   if (demyConfig.useMongoDB) {
-    Product.find().count().then(productsCount => {
+    Product.find().countDocuments().then(productsCount => {
       totalItems = productsCount;
       return Product.find().skip((pageIndex - 1) * ITEMS_PER_PAGE).limit(ITEMS_PER_PAGE);
     }).then(products => {
@@ -49,7 +49,7 @@ exports.getProducts = (req, res, next) => {
   let totalItems = 0;
 
   if (demyConfig.useMongoDB) {
-    Product.find().count().then(productsCount => {
+    Product.find().countDocuments().then(productsCount => {
       totalItems = productsCount;
       return Product.find().skip((pageIndex - 1) * ITEMS_PER_PAGE).limit(ITEMS_PER_PAGE);
     }).then(products => {

@@ -13,7 +13,7 @@ exports.getProducts = (req, res, next) => {
   let totalItems = 0;
 
   if (demyConfig.useMongoDB) {
-    Product.find({ userId: userId }).count().then(productsCount => {
+    Product.find({ userId: userId }).countDocuments().then(productsCount => {
       totalItems = productsCount;
       return Product.find({ userId: userId }).skip((pageIndex - 1) * ITEMS_PER_PAGE).limit(ITEMS_PER_PAGE);
     }).then(products => {
@@ -180,9 +180,9 @@ exports.postEditProduct = (req, res, next) => {
   });
 }
 
-exports.postDeleteProduct = (req, res, next) => {
+exports.deleteProduct = (req, res, next) => {
   const userId = req.user._id;
-  const productId = req.body.productId && req.body.productId.trim();
+  const productId = req.params.productId && req.params.productId.trim();
   if (productId) {
     let productPromise;
     if (demyConfig.useMongoDB) {
@@ -190,21 +190,33 @@ exports.postDeleteProduct = (req, res, next) => {
         if (!product) {
           return new Error('Invalid product');
         }
-        filesUtil.deleteFile(product.imageUrl); // delete product image
+        // remove first char, i.e '/' from image path
+        const correctedFilePath = product.imageUrl && product.imageUrl.slice(1);
+        filesUtil.deleteFile(correctedFilePath); // delete product image
         // delete the product
         return Product.findOneAndRemove({ _id: productId, userId: userId });
       });
     } else {
       productPromise = Product.findOne({ where: { id: productId, UserId: req.user.id}}).then(product => {
-        filesUtil.deleteFile(product.imageUrl); // delete product image
+        // remove first char, i.e '/' from image path
+        const correctedFilePath = product.imageUrl && product.imageUrl.slice(1);
+        filesUtil.deleteFile(correctedFilePath); // delete product image
         return product.destroy(); // delete product
       });
     }
 
-    productPromise.then((result) => {
-      res.redirect('/admin/products');
+    productPromise.then(result => {
+      // res.redirect('/admin/products');
+      res.json({
+        message: 'Success',
+        result
+      });
     }).catch(error => {
-      return next(new Error(error));
+      // return next(new Error(error));
+      res.status(500).json({
+        message: 'Delete operation failed',
+        error
+      });
     });
   }
 }
