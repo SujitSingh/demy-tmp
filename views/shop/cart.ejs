@@ -19,7 +19,8 @@
                 <% } %>
               </h4>
               <form action="/cart-delete-item" method="POST">
-                <input type="hidden" value="<%= product._id || product.id %>" name="productId">
+                <input type="hidden" value="<%= product._id || product.id %>" name="cartItemId">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                 <button class="btn-action" type="submit">Delete</button>
               </form>
             </header>
@@ -33,10 +34,9 @@
           </article>
         <% } %>
       </div>
-      <form class="order-form" action="/create-order" method="POST">
-        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-        <button type="submit" class="btn-action">Order Now</button>
-      </form>
+      <div class="checkout-container centered-text">
+        <a href="/checkout" class="checkout-link btn-action">Checkout</a>
+      </div>
     <% } else { %>
       <h2>No products in cart</h2>
     <% } %>

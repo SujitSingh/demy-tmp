@@ -52,9 +52,10 @@ userSchema.methods.getCartItems = function() {
   });
 }
 
-userSchema.methods.deleteCartItem = function(productId) {
+userSchema.methods.deleteCartItem = function(cartItemId) {
+  // filter out provided cart item
   const updatedCartItems = this.cart.items.filter(item => {
-    return item.productId.toString() === productId.toString();
+    return item._id.toString() !== cartItemId.toString();
   });
   this.cart.items = updatedCartItems;
   return this.save();

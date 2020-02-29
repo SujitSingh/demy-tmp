@@ -1,7 +1,50 @@
 <%- include('../includes/page-start.ejs') %>
   <link rel="stylesheet" href="/css/product.css">
+  <script src="https://js.stripe.com/v3/"></script>
 </head>
 <body>
   <%- include('../includes/navigation.ejs') %>
+  
+  <main class="content-area">
+    <% if(products.length > 0) { %>
+      <div class="products">
+        <% for(let product of products) { %>
+          <article class="card product-item">
+            <header class="card-header">
+              <h4 class="product-title">
+                <%= product.title || product.productId.title %> 
+                <% if (product.CartItem) { %> 
+                  (<%= product.CartItem.quantity %>) 
+                <% } else { %>
+                  (<%= product.quantity %>)
+                <% } %>
+              </h4>
+            </header>
+            <div class="card-banner">
+              <img class="product-image" src="<%= product.imageUrl || product.productId.imageUrl %>" alt="<%= product.title || product.productId.title %>" />
+            </div>
+            <div class="card-content">
+              <h5 class="product-price">$<%= product.price || product.productId.price %></h5>
+              <p class="product-description"><%= product.description || product.productId.description %></p>
+            </div>
+          </article>
+        <% } %>
+      </div>
+      <div class="products-total centered-text">Total sum: $<%= totalSum %></div>
+      <div class="centered-text">
+        <button id="order-btn" class="btn-action" onclick="orderItems()">Place Order</button>
+        <script>
+          const stripe = Stripe('pk_test_Yi5B16whRZVp8nX3DaDwYqGo00tOraKRrz');
+          function orderItems() {
+            stripe.redirectToCheckout({
+              sessionId: '<%= sessionId %>'
+            });
+          }
+        </script>
+      </div>
+    <% } else { %>
+      <h2>No products in cart</h2>
+    <% } %>
+  </main>
 
 <%- include('../includes/page-end.ejs') %>

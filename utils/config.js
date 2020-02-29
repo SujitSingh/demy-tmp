@@ -8,6 +8,7 @@ const demyConfig = {
     user: '<username>',
     pass: '<password>'
   },
+  stripe: '<stripe-secret-token>',
   productImgsRoot: 'public/imgs',
   invoiceFilesRoot: 'data/invoice'
 };

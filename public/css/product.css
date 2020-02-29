@@ -60,3 +60,12 @@
   color: #fff;
   background-color: #40407a;
 }
+
+.products-total {
+  font-weight: 700;
+  margin: 15px 0;
+}
+
+.checkout-container {
+  padding: 10px;
+}

@@ -84,3 +84,7 @@ main.content-area {
 .error-message {
   color: #ff5722;
 }
+
+.centered-text {
+  text-align: center;
+}
