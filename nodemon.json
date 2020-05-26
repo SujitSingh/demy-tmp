@@ -6,6 +6,9 @@
     "MONGO_DB_NAME": "demy_nosql",
     "MONGO_USER": "root",
     "MONGO_PASSWORD": "passw0rd",
-    "STRIPE_KEY": "<stripe-secret-token>"
+    "STRIPE_KEY": "<stripe-secret-token>",
+    "SMTP_HOST": "smtp.mailtrap.io",
+    "SMTP_USER": "<smtp-user>",
+    "SMTP_PASS": "<smtp-pass>"
   }
 }
