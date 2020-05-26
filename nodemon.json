@@ -1,0 +1,11 @@
+{
+  "env": {
+    "SERVER_PORT": 3300,
+    "SESSION_SECRET": "some-session-secret",
+    "MONGO_HOST": "localhost:27017",
+    "MONGO_DB_NAME": "demy_nosql",
+    "MONGO_USER": "root",
+    "MONGO_PASSWORD": "passw0rd",
+    "STRIPE_KEY": "<stripe-secret-token>"
+  }
+}

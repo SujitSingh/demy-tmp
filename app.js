@@ -15,7 +15,7 @@ const dbConnections = require('./utils/database');
 const sequelize = !demyConfig.useMongoDB ? dbConnections.sequelize : undefined;
 const mongoConnection = demyConfig.useMongoDB ? dbConnections.mongoConnection : undefined;
 
-const port = process.env.PORT || 3300;
+const port = demyConfig.serverPort;
 const app = express();
 const adminEmail = 'admin1@test.com';
 const sessionStore = new MongoDBStrore(
