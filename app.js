@@ -8,6 +8,8 @@ const multer = require('multer');
 const csurf = require('csurf');
 const flash = require('connect-flash');
 const MongoDBStrore = require('connect-mongodb-session')(session);
+const helmet = require('helmet');
+const compression = require('compression')
 
 const demyConfig = require('./utils/config');
 const dbConnections = require('./utils/database');
@@ -17,6 +19,13 @@ const mongoConnection = demyConfig.useMongoDB ? dbConnections.mongoConnection : 
 
 const port = demyConfig.serverPort;
 const app = express();
+
+if (process.env.NODE_ENV === 'production') {
+  // extra plugins for production
+  app.use(helmet());
+  app.use(compression());
+}
+
 const adminEmail = 'admin1@test.com';
 const sessionStore = new MongoDBStrore(
   { uri: demyConfig.mongoDBPath, collection: 'Sessions' },

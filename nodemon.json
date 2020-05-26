@@ -1,5 +1,6 @@
 {
   "env": {
+    "NODE_ENV": "development",
     "SERVER_PORT": 3300,
     "SESSION_SECRET": "some-session-secret",
     "MONGO_HOST": "localhost:27017",
