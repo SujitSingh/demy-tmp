@@ -97,6 +97,7 @@ app.use(csurf({ }));
 app.use(flash());
 // public folders
 app.use(express.static(path.join(rootDir, 'public')));
+filesUtil.createImgsFolderIfNotPresent();
 app.use(`/${demyConfig.productImgsRoot}`, express.static(path.join(rootDir, demyConfig.productImgsRoot)));
 
 // add user details/object under request

@@ -3,5 +3,11 @@ exports.notFound = (req, res, next) => {
 }
 
 exports.serverError = (error, req, res, next) => {
-  res.status(500).render('500', { pageTitle: '500', error, path: '' });
+  res.status(500).render('500', {
+    pageTitle: '500',
+    error,
+    path: '',
+    isAuthenticated: req.session.isLoggedIn,
+    csrfToken: req.session.csrfSecret
+  });
 }
