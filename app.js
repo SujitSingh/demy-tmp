@@ -9,10 +9,12 @@ const csurf = require('csurf');
 const flash = require('connect-flash');
 const MongoDBStrore = require('connect-mongodb-session')(session);
 const helmet = require('helmet');
-const compression = require('compression')
+const compression = require('compression');
+const morgan = require('morgan');
 
 const demyConfig = require('./utils/config');
 const dbConnections = require('./utils/database');
+const filesUtil = require('./utils/files');
 
 const sequelize = !demyConfig.useMongoDB ? dbConnections.sequelize : undefined;
 const mongoConnection = demyConfig.useMongoDB ? dbConnections.mongoConnection : undefined;
@@ -25,6 +27,9 @@ if (process.env.NODE_ENV === 'production') {
   app.use(helmet());
   app.use(compression());
 }
+
+// morgan reques logging
+app.use(morgan('combined', { stream: filesUtil.reqLoggerFileStream }));
 
 const adminEmail = 'admin1@test.com';
 const sessionStore = new MongoDBStrore(

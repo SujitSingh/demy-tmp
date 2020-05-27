@@ -10,3 +10,9 @@ exports.deleteFile = (filePath) => {
     }
   });
 }
+
+exports.reqLoggerFileStream = fs.createWriteStream(
+  // for writing request logs
+  path.join(rootDir, 'requests.log'),
+  { flags: 'a' }
+); 
